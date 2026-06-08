@@ -42,3 +42,13 @@ Run the deterministic forehand-clear RAG demo:
 ```
 
 This writes Markdown reports under `rag_project/outputs/forehand_clear_rag_reports/`. The generated reports are local artifacts and are ignored by Git.
+
+Run batch diagnostics from a simulation dataset:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag_project.diagnostics.batch `
+  --dataset rag_project\examples\forehand_clear_dataset.json `
+  --output-dir rag_project\outputs\batch_forehand_clear
+```
+
+The dataset JSON must contain `correct_samples` and `eval_samples`. Each sample includes `time`, `events.impact`, `joint_angles`, `muscle_activation`, and a discrete `outcome_label`.
