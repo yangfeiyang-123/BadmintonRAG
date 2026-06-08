@@ -63,6 +63,20 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
     else:
         lines.append("- 当前诊断没有生成结构化改进动作。")
 
+    lines.extend(["", "## Outcome-Deviation Explanation Links", ""])
+    if report.explanation_links:
+        for link in report.explanation_links:
+            lines.append(
+                "- "
+                f"`{link.feature} -> {link.outcome_label}`: "
+                f"{link.feature_group}/{link.signal_name}, phase={link.phase}, "
+                f"severity={link.severity}, direction={link.deviation_direction}; "
+                f"mechanism={link.mechanism}; rationale={link.rationale}; "
+                f"correction_focus={link.correction_focus}; evidence_query={link.evidence_query}"
+            )
+    else:
+        lines.append("- No structured explanation links were generated.")
+
     lines.extend(["", "## 文献证据", ""])
     if evidence:
         for chunk in evidence:

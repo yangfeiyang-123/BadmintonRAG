@@ -14,3 +14,11 @@ def test_report_viewer_contains_csv_upload_and_conversion_logic():
     assert 'id="use-llm"' in html
     assert "/config" in html
     assert "payload.llm" in html
+
+
+def test_report_viewer_renders_explanation_links():
+    html = Path("rag_project/web/report_viewer.html").read_text(encoding="utf-8")
+
+    assert "function renderExplanationLinks" in html
+    assert "Outcome-Deviation Explanation Links" in html
+    assert "explanation_links" in html

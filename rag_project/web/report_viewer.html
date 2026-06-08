@@ -343,6 +343,18 @@
         </div>`).join("");
     }
 
+    function renderExplanationLinks(report) {
+      return (report.explanation_links || []).map(link => `
+        <div class="metric">
+          <span class="tag">${esc(link.feature_group)}/${esc(link.signal_name)}</span>
+          <strong style="font-size:15px">${esc(link.feature)} -> ${esc(link.outcome_label)}</strong>
+          <p>${esc(link.rationale)}</p>
+          <div class="evidence">mechanism=${esc(link.mechanism)}</div>
+          <div class="evidence">correction_focus=${esc(link.correction_focus)}</div>
+          <div class="evidence">evidence_query=${esc(link.evidence_query)}</div>
+        </div>`).join("");
+    }
+
     function renderEvidence(report) {
       return (report.evidence || []).map(e => `
         <li><code>${esc(e.source_id)}</code> ${esc(e.evidence_level)} - ${esc(e.title)}</li>`).join("");
@@ -358,6 +370,8 @@
           ${renderDeviations(report)}
           <h3>结构化改进计划</h3>
           <div class="summary">${renderPlan(report)}</div>
+          <h3>Outcome-Deviation Explanation Links</h3>
+          <div class="summary">${renderExplanationLinks(report)}</div>
           <h3>文献证据</h3>
           <ul class="evidence">${renderEvidence(report)}</ul>
         </article>`).join("");

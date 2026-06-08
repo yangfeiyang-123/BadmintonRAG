@@ -129,6 +129,21 @@ class CorrectionAction:
 
 
 @dataclass(frozen=True)
+class ExplanationLink:
+    outcome_label: str
+    feature: str
+    signal_name: str
+    feature_group: str
+    phase: str
+    severity: str
+    deviation_direction: str
+    mechanism: str
+    rationale: str
+    correction_focus: str
+    evidence_query: str
+
+
+@dataclass(frozen=True)
 class DiagnosisReport:
     sample_id: str
     action_type: str
@@ -139,4 +154,5 @@ class DiagnosisReport:
     likely_mechanisms: list[str] = field(default_factory=list)
     correction_suggestions: list[str] = field(default_factory=list)
     correction_plan: list[CorrectionAction] = field(default_factory=list)
+    explanation_links: list[ExplanationLink] = field(default_factory=list)
     evidence_queries: list[str] = field(default_factory=list)

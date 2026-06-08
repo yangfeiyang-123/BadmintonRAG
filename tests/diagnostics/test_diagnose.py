@@ -89,3 +89,28 @@ def test_diagnosis_includes_structured_correction_plan():
     assert trunk_action.drill
     assert trunk_action.validation_metric == "bring_observed_value_inside_template_range"
     assert oblique_action.feature_group == "muscle_activation"
+
+
+def test_diagnosis_links_deviations_to_outcome_mechanisms_and_correction_focus():
+    template = build_correct_template("correct", [correct_sample("a"), correct_sample("b")])
+    report = diagnose_sample(poor_sample(), template)
+
+    assert report.explanation_links
+    trunk_link = next(link for link in report.explanation_links if link.signal_name == "trunk_rotation")
+
+    assert trunk_link.outcome_label == "ball_high_not_far"
+    assert trunk_link.feature == "trunk_rotation_peak"
+    assert trunk_link.feature_group == "joint_angle"
+    assert trunk_link.deviation_direction == "below_template"
+    assert trunk_link.mechanism
+    assert trunk_link.rationale
+    assert trunk_link.correction_focus
+    assert "trunk_rotation_peak" in trunk_link.evidence_query
+
+
+def test_diagnosis_evidence_queries_include_feature_specific_explanation_queries():
+    template = build_correct_template("correct", [correct_sample("a"), correct_sample("b")])
+    report = diagnose_sample(poor_sample(), template)
+
+    assert any("trunk_rotation_peak" in query for query in report.evidence_queries)
+    assert any("external_oblique_activation_peak" in query for query in report.evidence_queries)

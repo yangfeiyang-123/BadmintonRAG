@@ -2,7 +2,14 @@ from __future__ import annotations
 
 from rag_project.diagnostics.features import extract_features
 from rag_project.diagnostics.rules_forehand_clear import OUTCOME_RULES
-from rag_project.diagnostics.schemas import CorrectTemplate, CorrectionAction, Deviation, DiagnosisReport, DiagnosticSample
+from rag_project.diagnostics.schemas import (
+    CorrectTemplate,
+    CorrectionAction,
+    Deviation,
+    DiagnosisReport,
+    DiagnosticSample,
+    ExplanationLink,
+)
 
 
 def _severity(observed: float, lower: float, upper: float, std: float) -> str:
@@ -87,6 +94,54 @@ def _build_correction_plan(deviations: list[Deviation]) -> list[CorrectionAction
     return plan
 
 
+def _mechanism_for_deviation(deviation: Deviation, mechanisms: list[str]) -> str:
+    if "trunk_rotation" in deviation.signal_name and mechanisms:
+        return mechanisms[0]
+    if deviation.feature_group == "muscle_activation" and len(mechanisms) >= 2:
+        return mechanisms[1]
+    if ("forearm_pronation" in deviation.signal_name or "wrist" in deviation.signal_name) and len(mechanisms) >= 2:
+        return mechanisms[1]
+    if mechanisms:
+        return mechanisms[-1]
+    return "outcome_linked_signal_deviation"
+
+
+def _build_explanation_links(
+    outcome_label: str,
+    deviations: list[Deviation],
+    mechanisms: list[str],
+) -> list[ExplanationLink]:
+    links: list[ExplanationLink] = []
+    for deviation in deviations:
+        mechanism = _mechanism_for_deviation(deviation, mechanisms)
+        direction = "lower than" if deviation.direction == "below_template" else "higher than"
+        links.append(
+            ExplanationLink(
+                outcome_label=outcome_label,
+                feature=deviation.feature,
+                signal_name=deviation.signal_name,
+                feature_group=deviation.feature_group,
+                phase=deviation.phase,
+                severity=deviation.severity,
+                deviation_direction=deviation.direction,
+                mechanism=mechanism,
+                rationale=(
+                    f"{deviation.feature} is {direction} the correct-template range during "
+                    f"{deviation.phase}; this signal is linked to {outcome_label} through {mechanism}."
+                ),
+                correction_focus=(
+                    f"Move {deviation.signal_name} {deviation.direction} deviation back toward "
+                    f"{deviation.template_lower_bound:.4g}-{deviation.template_upper_bound:.4g} {deviation.unit}."
+                ),
+                evidence_query=(
+                    f"badminton forehand clear {outcome_label} {deviation.feature} "
+                    f"{deviation.signal_name} {mechanism}"
+                ),
+            )
+        )
+    return links
+
+
 def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> DiagnosisReport:
     observed_features = extract_features(sample)
     rule = OUTCOME_RULES[sample.outcome_label]
@@ -124,6 +179,15 @@ def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> Diag
     severity_rank = {"high": 3, "medium": 2, "low": 1}
     deviations.sort(key=lambda item: severity_rank[item.severity], reverse=True)
     confidence = "medium" if deviations else "low"
+    key_deviations = deviations[:8]
+    mechanisms = list(rule["mechanisms"])
+    explanation_links = _build_explanation_links(sample.outcome_label.value, key_deviations, mechanisms)
+    evidence_queries = [
+        f"forehand clear {sample.outcome_label.value}",
+        "badminton forehand clear trunk rotation kinematics",
+        "badminton overhead forehand stroke kinetic chain",
+    ]
+    evidence_queries.extend(link.evidence_query for link in explanation_links)
 
     return DiagnosisReport(
         sample_id=sample.sample_id,
@@ -131,13 +195,10 @@ def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> Diag
         outcome_label=sample.outcome_label,
         primary_diagnosis=rule["primary_diagnosis"],
         diagnostic_confidence=confidence,
-        key_deviations=deviations[:8],
-        likely_mechanisms=list(rule["mechanisms"]),
+        key_deviations=key_deviations,
+        likely_mechanisms=mechanisms,
         correction_suggestions=list(rule["suggestions"]),
-        correction_plan=_build_correction_plan(deviations[:8]),
-        evidence_queries=[
-            f"forehand clear {sample.outcome_label.value}",
-            "badminton forehand clear trunk rotation kinematics",
-            "badminton overhead forehand stroke kinetic chain",
-        ],
+        correction_plan=_build_correction_plan(key_deviations),
+        explanation_links=explanation_links,
+        evidence_queries=evidence_queries,
     )

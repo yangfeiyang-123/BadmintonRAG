@@ -1,5 +1,5 @@
 from rag_project.diagnostics.explain import render_diagnosis_markdown
-from rag_project.diagnostics.schemas import CorrectionAction, Deviation, DiagnosisReport, OutcomeLabel
+from rag_project.diagnostics.schemas import CorrectionAction, Deviation, DiagnosisReport, ExplanationLink, OutcomeLabel
 from rag_project.knowledge.evidence_index import EvidenceChunk
 
 
@@ -40,6 +40,21 @@ def test_renders_markdown_with_evidence_citations():
                 goal="提高 trunk_rotation 到正确模板范围。",
                 drill="练习蹬地、转髋、转体到击球窗口的连续释放。",
                 validation_metric="bring_observed_value_inside_template_range",
+            )
+        ],
+        explanation_links=[
+            ExplanationLink(
+                outcome_label="ball_high_not_far",
+                feature="trunk_rotation_peak",
+                signal_name="trunk_rotation",
+                feature_group="joint_angle",
+                phase="acceleration",
+                severity="high",
+                deviation_direction="below_template",
+                mechanism="trunk-led forward momentum is insufficient",
+                rationale="trunk_rotation_peak is lower than the correct-template range during acceleration.",
+                correction_focus="Move trunk_rotation back toward 36-46 degree.",
+                evidence_query="badminton forehand clear ball_high_not_far trunk_rotation_peak",
             )
         ],
         evidence_queries=["badminton forehand clear trunk rotation"],
