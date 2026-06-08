@@ -29,3 +29,11 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\python.exe -m pytest -v
 ```
+
+Run the deterministic forehand-clear RAG demo:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag_project.diagnostics.run_forehand_clear_rag_demo
+```
+
+This writes Markdown reports under `rag_project/outputs/forehand_clear_rag_reports/`. The generated reports are local artifacts and are ignored by Git.
