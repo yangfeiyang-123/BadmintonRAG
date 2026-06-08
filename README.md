@@ -6,14 +6,15 @@ Current scope:
 
 - Literature acquisition manifests and metadata for badminton action-analysis sources.
 - Forehand-clear diagnostic MVP based on correct-template deviation detection.
-- Offline tests for schema validation, feature extraction, template construction, source classification, text extraction, and diagnosis reports.
+- Processed text corpus generation, local TF-IDF vector retrieval, and retrieval evaluation.
+- Offline tests for schema validation, feature extraction, template construction, source classification, text extraction, retrieval, LLM prompt construction, and diagnosis reports.
 
-The first diagnostic phase does not require an LLM key. LLM configuration is reserved for the later RAG explanation layer and should be provided through environment variables:
+The deterministic diagnostic and retrieval pipeline does not require an LLM key. If you want to call an OpenAI-compatible chat-completions endpoint, provide:
 
 ```text
-RAG_LLM_BASE_URL
-RAG_LLM_API_KEY
-RAG_LLM_MODEL
+BADMINTON_LLM_BASE_URL
+BADMINTON_LLM_API_KEY
+BADMINTON_LLM_MODEL
 ```
 
 Downloaded third-party PDF/HTML artifacts are intentionally not committed. Rebuild or refresh them with:
@@ -33,6 +34,10 @@ python -m venv .venv
 Run the deterministic forehand-clear RAG demo:
 
 ```powershell
+.\.venv\Scripts\python.exe -m rag_project.knowledge.source_catalog
+.\.venv\Scripts\python.exe -m rag_project.knowledge.text_corpus
+.\.venv\Scripts\python.exe -m rag_project.knowledge.vector_index
+.\.venv\Scripts\python.exe -m rag_project.knowledge.retrieval_eval
 .\.venv\Scripts\python.exe -m rag_project.diagnostics.run_forehand_clear_rag_demo
 ```
 
