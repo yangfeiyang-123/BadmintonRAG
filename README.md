@@ -48,7 +48,19 @@ Run batch diagnostics from a simulation dataset:
 ```powershell
 .\.venv\Scripts\python.exe -m rag_project.diagnostics.batch `
   --dataset rag_project\examples\forehand_clear_dataset.json `
-  --output-dir rag_project\outputs\batch_forehand_clear
+  --output-dir rag_project\outputs\batch_forehand_clear `
+  --retrieval-backend keyword
+```
+
+Use the local vector index for evidence retrieval:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag_project.knowledge.text_corpus
+.\.venv\Scripts\python.exe -m rag_project.knowledge.vector_index
+.\.venv\Scripts\python.exe -m rag_project.diagnostics.batch `
+  --dataset rag_project\examples\forehand_clear_dataset.json `
+  --output-dir rag_project\outputs\batch_forehand_clear_vector `
+  --retrieval-backend vector
 ```
 
 The dataset JSON must contain `correct_samples` and `eval_samples`. Each sample includes `time`, `events.impact`, `joint_angles`, `muscle_activation`, and a discrete `outcome_label`.
