@@ -82,6 +82,15 @@ Run batch diagnostics from a simulation CSV:
 
 CSV rows represent time points. Required columns are `sample_id`, `split`, `action_type`, `outcome_label`, and `time`. Use `split=correct` for template samples and `split=eval` for samples to diagnose. Event columns use `event_` prefixes such as `event_impact`; joint angle columns use `joint_` prefixes such as `joint_trunk_rotation`; muscle activation columns use `muscle_` prefixes such as `muscle_external_oblique`.
 
+Validate a real simulation CSV before diagnosis:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag_project.diagnostics.data_contract `
+  --csv-dataset rag_project\examples\forehand_clear_simulation.csv
+```
+
+The full input mapping is documented in `docs/simulation_data_contract.md`.
+
 Check or rebuild system artifacts:
 
 ```powershell

@@ -4,6 +4,7 @@ import csv
 from collections import defaultdict
 from pathlib import Path
 
+from rag_project.diagnostics.data_contract import validate_simulation_csv_contract
 from rag_project.diagnostics.dataset import DiagnosticDataset
 from rag_project.diagnostics.schemas import DiagnosticSample, TimeSeriesValidationError
 
@@ -54,6 +55,7 @@ def _sample_from_rows(sample_id: str, rows: list[dict[str, str]], fieldnames: li
 
 
 def load_dataset_from_csv(path: Path, dataset_id: str | None = None) -> DiagnosticDataset:
+    validate_simulation_csv_contract(path)
     with path.open(encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         fieldnames = list(reader.fieldnames or [])
