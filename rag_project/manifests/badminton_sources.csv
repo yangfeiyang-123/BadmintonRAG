@@ -1,0 +1,38 @@
+id,category,title,year,url,expected_access,notes
+BWF_COACHES,official,BWF Coach Education / Coach Manual Level 1 and Level 2,,https://development.bwfbadminton.com/coaches,official_page,Official BWF coach education page; manuals may be linked from page.
+BWF_SHUTTLE_TIME,official,BWF Shuttle Time Teacher Manual Lesson Plans and Video Clips,,https://shuttletime.bwfbadminton.com/teacher-manual,official_page,Official BWF school badminton teaching materials.
+BOOK_GRICE,book,Tony Grice - Badminton: Steps to Success,,https://us.humankinetics.com/products/badminton-steps-to-success-2nd-edition,book_page,Commercial textbook page; full book is not expected to be downloadable.
+BOOK_BRAHMS,book,Bernd-Volker Brahms - Badminton Handbook: Training Tactics Competition,,https://books.google.rw/books?id=4aQKAwAAQBAJ&printsec=frontcover,book_page,Google Books preview page; full book is not expected to be downloadable.
+CN_JINYUFEIYANG,course,金羽飞扬--世界冠军的羽毛球课堂,,https://higher.smartedu.cn/course/63e2d37eaf1f1b5d3ecf95ee,official_page,Chinese public course landing page.
+CN_ZHANG_RUILIN,book,张瑞林 羽毛球运动教程,2017,https://tyb.bwu.edu.cn/system/_content/download.jsp?owner=1374793674&urltype=news.DownloadAttachUrl&wbfileid=3005817,possible_pdf,University attachment link; may be a syllabus or downloadable file.
+REV_PHOMSOUPHA_LAFFAYE,review,The Science of Badminton: Game Characteristics Anthropometry Physiology Visual Fitness and Biomechanics,2015,https://pubmed.ncbi.nlm.nih.gov/25549780/,abstract_or_fulltext,PubMed record; full text depends on linked provider.
+REV_WADDELL_GOWITZKE,review,Biomechanical Principles Applied to Badminton Power Strokes,,https://ojs.ub.uni-konstanz.de/cpa/article/download/2233/2089/,open_pdf,Direct PDF from conference proceedings.
+REV_LAM_LUNGE,review,Biomechanics of Lower Limb in Badminton Lunge: A Systematic Scoping Review,2020,https://pmc.ncbi.nlm.nih.gov/articles/PMC7648456/,open_article,PMC open access article.
+REV_HARYANTO_SMASH,review,Biomechanical Analysis of Smash Stroke in Badminton,2024,https://revistaretos.org/index.php/retos/article/download/107662/78753/425050,open_pdf,Direct PDF.
+REV_STEPPER_INJURIES,review,Systematic Review on Badminton Injuries,2025,https://pmc.ncbi.nlm.nih.gov/articles/PMC11781153/,open_article,PMC open access article.
+CLEAR_SORENSEN,clear,A Biomechanical Analysis of Clear Strokes in Badminton,2010,https://projekter.aau.dk/projekter/files/42678547/articledone.pdf,open_pdf,Direct PDF.
+CLEAR_ZHAO_LOWER_LIMB,clear,A Biomechanical Analysis of Lower Limb Movement on the Backcourt Forehand Clear Stroke among Badminton Players of Different Levels,2019,https://pmc.ncbi.nlm.nih.gov/articles/PMC6348812/,open_article,PMC open access article.
+CLEAR_ZHI_JIXIN_CN,clear,羽毛球后场正手高远球技术的运动学分析,2018,https://stxb.magtech.com.cn/CN/Y2018/V37/I2/109,abstract_or_fulltext,Chinese journal page; PDF availability depends on site access.
+CLEAR_HUANG_EXPERT_NOVICE,clear,Differences in Backcourt Forehand Clear Stroke between Novice and Expert Players,2025,https://pmc.ncbi.nlm.nih.gov/articles/PMC12060343/,open_article,PMC open access article.
+OVERHEAD_WANG_ARM_TRUNK,overhead,Steps for Arm and Trunk Actions of Overhead Forehand Stroke,2009,https://pubmed.ncbi.nlm.nih.gov/19831099/,abstract_or_fulltext,PubMed record; full text depends on linked provider.
+SMASH_KING_JUMP,smash,A Correlational Analysis of Shuttlecock Speed Kinematic Determinants in the Badminton Jump Smash,2020,https://www.mdpi.com/2076-3417/10/4/1248,open_article,MDPI open access article.
+SMASH_LI_FOREHAND,smash,Biomechanical Insights for Developing Evidence-Based Training Programs: Overhead Forehand Smash,2023,https://www.mdpi.com/2076-3417/13/22/12488,open_article,MDPI open access article.
+SMASH_ZHANG_XFACTOR,smash,The Influence of X-Factor and Experience on the Quality of the Badminton Forehand Smash,2016,https://pmc.ncbi.nlm.nih.gov/articles/PMC5260572/,open_article,PMC open access article.
+SMASH_RUSDIANA_3D,smash,3D Kinematics Analysis of Overhead Backhand and Forehand Smashes,2021,https://efsupit.ro/images/stories/iunie2021/Art%20218.pdf,open_pdf,Direct PDF.
+SMASH_CHEN_ACTIVE_PASSIVE,smash,主動及被動羽球殺球動作之運動學分析,2009,https://www.airitilibrary.com/Article/Detail?DocID=U0021-1610201315152704&source=,metadata_page,Airiti metadata page; full thesis may require institutional access.
+SMASH_FOREHAND_BACKHAND_CN,smash,大專甲組羽球選手正拍與反拍殺球動作之生物力學分析,,https://teacher.tku.edu.tw/StfFdDtl.aspx?tid=6866367,metadata_page,University metadata page.
+SMASH_HE_FATIGUE,smash,Impact of Specialized Fatigue and Backhand Smash on Ankle Biomechanics,2024,https://www.nature.com/articles/s41598-024-61141-z,open_article,Nature Scientific Reports open article.
+SMASH_XUE_REVIEW_CN,smash,羽球殺球技術在運動生物力學上之應用,2009,https://www.airitilibrary.com/Article/Detail?DocID=15603822-200908-x-103-109-115-a,metadata_page,Airiti metadata page; full text may require access.
+OVERHEAD_TSAI_THREE_STROKES,overhead,Biomechanical Analysis of the Upper Extremity in Three Different Badminton Overhead Strokes,2000,https://ojs.ub.uni-konstanz.de/cpa/article/view/2521,open_article,Conference proceedings page; PDF may be linked.
+NET_HSUEH_FOREHAND,net,Biomechanical Analysis of Badminton Forehand Net Shots,2012,https://ojs.ub.uni-konstanz.de/cpa/article/view/5367,open_article,Conference proceedings page; PDF may be linked.
+NET_TUMBLE,net,Biomechanical Analysis of Badminton Net Shot between Tumble and Without Tumble,2009,https://media.isbweb.org/images/conf/2009/data/pdf/544.pdf,open_pdf,Direct PDF.
+SERVE_WANG_CN,serve,羽球正拍與反拍發球之生物力學分析,2010,https://www.airitilibrary.com/Article/Detail/U0021-1610201315194576,metadata_page,Airiti thesis metadata page; full text may require access.
+SERVE_LARASATY_IMU,serve,Kinematic Analysis of Wrist and Elbow Angles in Badminton Serve Techniques Based on IMU Sensors,2025,https://areste.org/index.php/oai/article/view/66,open_article,Journal page; PDF may be linked.
+SERVE_BETTERMINTON,serve,BetterMinton Service: Analyzing the Badminton Service Using Open Kinetic Chain,2023,https://arxiv.org/abs/2312.01487,open_article,arXiv abstract; PDF is public.
+LUNGE_KUNTZE_COMMON,lunge,A Biomechanical Analysis of Common Lunge Tasks in Badminton,2010,https://pubmed.ncbi.nlm.nih.gov/20391092/,abstract_or_fulltext,PubMed record; full text depends on linked provider.
+LUNGE_MEI_RIGHT_FORWARD,lunge,A Biomechanical Investigation of Right-Forward Lunging Step among Badminton Players,2017,https://pubmed.ncbi.nlm.nih.gov/27075213/,abstract_or_fulltext,PubMed record; full text depends on linked provider.
+LUNGE_WANG_SPLIT_STEP,lunge,Biomechanical Effects of the Badminton Split-Step on Forehand and Backhand Lunges,2024,https://pmc.ncbi.nlm.nih.gov/articles/PMC11117488/,open_article,PMC open access article.
+LUNGE_XIE_FOREHAND_BACKHAND,lunge,Lower Limb Biomechanical Differences between Forehand and Backhand Lunges,2025,https://www.frontiersin.org/journals/bioengineering-and-biotechnology/articles/10.3389/fbioe.2025.1558918/full,open_article,Frontiers open access article.
+LUNGE_CUI_TAKEOFF_LANDING,lunge,Biomechanical Analysis on Skilled Badminton Players during Take-Off and Landing,2022,https://pmc.ncbi.nlm.nih.gov/articles/PMC9598458/,open_article,PMC open access article.
+FOOTWORK_LIN_SHOE_CN,footwork,羽球步法以運動生物力學分析作為羽球鞋功能設計之研究,2010,https://www.airitilibrary.com/Article/Detail/10247300-201003-201005050015-201005050015-155-162,metadata_page,Airiti metadata page; full text may require access.
+FOOTWORK_START_CN,footwork,羽球啟動步法之起跳時機及下肢生物力學分析,,https://ndltd.ncl.edu.tw/handle/07201295445629538525,metadata_page,Taiwan thesis metadata page; full text availability depends on repository.

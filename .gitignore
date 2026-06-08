@@ -1,0 +1,10 @@
+.venv/
+.wheelhouse/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+
+rag_project/outputs/
+rag_project/sources/raw/pdf/
+rag_project/sources/raw/html/
+
