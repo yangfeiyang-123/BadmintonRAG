@@ -49,7 +49,9 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
     lines.extend(["", "## 文献证据", ""])
     if evidence:
         for chunk in evidence:
-            lines.append(f"- `{chunk.source_id}` | `{chunk.source_class}` | score={chunk.score:.2f}")
+            lines.append(
+                f"- `{chunk.source_id}` | `{chunk.source_class}` | evidence={chunk.evidence_level} | score={chunk.score:.2f}"
+            )
             lines.append(f"  - 标题：{chunk.title}")
             lines.append(f"  - 文件：`{chunk.artifact_path}`")
             lines.append(f"  - 摘要片段：{_clip(chunk.text)}")

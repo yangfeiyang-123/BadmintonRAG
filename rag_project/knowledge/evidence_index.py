@@ -21,6 +21,7 @@ class EvidenceChunk:
     artifact_path: str
     text: str
     token_count: int
+    evidence_level: str = "mechanistic_inference"
     score: float = 0.0
 
 
@@ -40,6 +41,48 @@ def _split_words(text: str, chunk_size: int, overlap: int) -> list[str]:
             break
         chunks.append(" ".join(chunk_words))
     return chunks
+
+
+def _clean_chunk_text(text: str) -> str:
+    cleaned = re.sub(r"(?i)\bopen in a new tab\b", " ", text)
+    cleaned = re.sub(r"(?i)\bfigure\s+\d+\b", " ", cleaned)
+    cleaned = re.sub(r"(?i)\bunit\s*:\s*[A-Za-z0-9/%^.-]+", " ", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned.strip()
+
+
+def _is_noise_chunk(text: str) -> bool:
+    lowered = text.lower()
+    boilerplate_hits = sum(
+        lowered.count(pattern)
+        for pattern in [
+            "open in a new tab",
+            "figure ",
+            "table ",
+            "cookie",
+            "javascript",
+            "privacy policy",
+        ]
+    )
+    tokens = _tokenize(text)
+    if not tokens:
+        return True
+    return boilerplate_hits >= 2 and len(tokens) < 40
+
+
+def _evidence_level(source_id: str, source_class: str, category: str, title: str) -> str:
+    text = f"{source_id} {source_class} {category} {title}".lower()
+    if source_class == "official_manual" or "bwf" in text or "shuttle" in text:
+        return "official_instruction"
+    if "clear" in text and ("forehand" in text or "zhao" in text or "huang" in text or "sørensen" in text):
+        return "direct_biomechanics_forehand_clear"
+    if "emg" in text or "serve_wang" in text:
+        return "direct_emg"
+    if "expert" in text or "novice" in text or "different levels" in text:
+        return "expert_novice_comparison"
+    if "overhead" in text or "smash" in text or "stroke" in text:
+        return "overhead_stroke_transfer"
+    return "mechanistic_inference"
 
 
 def _first_existing_artifact(downloaded_files: str) -> Path | None:
@@ -78,6 +121,9 @@ def build_evidence_index(sources: list[dict[str, str]], chunk_size: int = 160, o
         if not text:
             continue
         for index, chunk_text in enumerate(_split_words(text, chunk_size, overlap), start=1):
+            if _is_noise_chunk(chunk_text):
+                continue
+            chunk_text = _clean_chunk_text(chunk_text)
             tokens = _tokenize(chunk_text)
             if len(tokens) < 8:
                 continue
@@ -90,12 +136,20 @@ def build_evidence_index(sources: list[dict[str, str]], chunk_size: int = 160, o
                     artifact_path=str(artifact),
                     text=chunk_text,
                     token_count=len(tokens),
+                    evidence_level=_evidence_level(
+                        source.get("id", "unknown"),
+                        source_class,
+                        source.get("category", ""),
+                        source.get("title", ""),
+                    ),
                 )
             )
     return chunks
 
 
-def retrieve_evidence(chunks: list[EvidenceChunk], queries: list[str], top_k: int = 5) -> list[EvidenceChunk]:
+def retrieve_evidence(
+    chunks: list[EvidenceChunk], queries: list[str], top_k: int = 5, max_per_source: int = 2
+) -> list[EvidenceChunk]:
     query_tokens = set(_tokenize(" ".join(queries)))
     if not query_tokens:
         return []
@@ -121,9 +175,20 @@ def retrieve_evidence(chunks: list[EvidenceChunk], queries: list[str], top_k: in
                 artifact_path=chunk.artifact_path,
                 text=chunk.text,
                 token_count=chunk.token_count,
+                evidence_level=chunk.evidence_level,
                 score=round(score, 4),
             )
         )
 
     scored.sort(key=lambda item: (item.score, item.source_id), reverse=True)
-    return scored[:top_k]
+    diversified: list[EvidenceChunk] = []
+    source_counts: dict[str, int] = {}
+    for item in scored:
+        count = source_counts.get(item.source_id, 0)
+        if count >= max_per_source:
+            continue
+        diversified.append(item)
+        source_counts[item.source_id] = count + 1
+        if len(diversified) >= top_k:
+            break
+    return diversified

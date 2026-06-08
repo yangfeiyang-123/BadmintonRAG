@@ -35,6 +35,7 @@ def test_renders_markdown_with_evidence_citations():
             artifact_path="rag_project/sources/raw/html/CLEAR_ZHAO_LOWER_LIMB.html",
             text="Badminton forehand clear stroke uses lower limb movement and trunk coordination.",
             token_count=10,
+            evidence_level="direct_biomechanics_forehand_clear",
             score=3.0,
         )
     ]
@@ -46,3 +47,4 @@ def test_renders_markdown_with_evidence_citations():
     assert "trunk_rotation_peak" in markdown
     assert "CLEAR_ZHAO_LOWER_LIMB" in markdown
     assert "full_text_html" in markdown
+    assert "direct_biomechanics_forehand_clear" in markdown
