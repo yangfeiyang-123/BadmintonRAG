@@ -33,6 +33,14 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -v
 ```
 
+After the virtual environment is ready, the Windows helper scripts provide the shortest path:
+
+```powershell
+.\scripts\bootstrap.ps1
+.\scripts\smoke.ps1
+.\scripts\test.ps1
+```
+
 Run the deterministic forehand-clear RAG demo:
 
 ```powershell
@@ -82,10 +90,23 @@ Check or rebuild system artifacts:
 .\.venv\Scripts\python.exe -m rag_project.system.bootstrap smoke
 ```
 
+Equivalent helper scripts:
+
+```powershell
+.\scripts\bootstrap.ps1
+.\scripts\smoke.ps1
+```
+
 Serve the HTTP API:
 
 ```powershell
 .\.venv\Scripts\python.exe -m rag_project.api.server --host 127.0.0.1 --port 8765
+```
+
+Equivalent helper script:
+
+```powershell
+.\scripts\serve.ps1 -HostName 127.0.0.1 -Port 8765
 ```
 
 Open the report viewer at `http://127.0.0.1:8765/`. The viewer can load the example JSON request, load or upload simulation CSV, call the batch diagnosis API, and render deviation signals, correct-template ranges, correction plans, and evidence.
@@ -93,6 +114,11 @@ Open the report viewer at `http://127.0.0.1:8765/`. The viewer can load the exam
 Available endpoints:
 
 - `GET /health`
+- `GET /config`
+- `GET /`
+- `GET /viewer`
+- `GET /examples/api_batch_request.json`
+- `GET /examples/forehand_clear_simulation.csv`
 - `POST /diagnose/batch`
 
 `POST /diagnose/batch` accepts JSON with `dataset`, optional `retrieval_backend`, optional `evidence_chunks`, and optional `llm`. It returns the same `summary` and structured `reports` as the batch pipeline.
