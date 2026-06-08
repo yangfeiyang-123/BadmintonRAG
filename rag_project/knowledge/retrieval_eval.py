@@ -85,6 +85,38 @@ def evaluate_retrieval(
     }
 
 
+def evaluate_index_retrieval(index, eval_items: list[dict[str, object]], top_k: int = 5) -> dict[str, object]:
+    results = []
+    hits = 0
+    for item in eval_items:
+        query = " ".join(str(query) for query in item["queries"])
+        retrieved = index.search(query, top_k=top_k, max_per_source=1)
+        retrieved_ids = [str(chunk["source_id"]) for chunk in retrieved]
+        expected_ids = [str(source_id) for source_id in item["expected_source_ids"]]
+        hit = bool(set(retrieved_ids) & set(expected_ids))
+        if hit:
+            hits += 1
+        results.append(
+            {
+                "question": item["question"],
+                "expected_source_ids": expected_ids,
+                "retrieved_source_ids": retrieved_ids,
+                "hit": hit,
+                "top_k": top_k,
+                "retrieval_backend": index.backend,
+            }
+        )
+    total = len(eval_items)
+    return {
+        "summary": {
+            "total": total,
+            "hits": hits,
+            "recall_at_k": round(hits / total, 4) if total else 0.0,
+        },
+        "items": results,
+    }
+
+
 def write_default_eval_set(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(DEFAULT_EVAL_SET, ensure_ascii=False, indent=2), encoding="utf-8")
