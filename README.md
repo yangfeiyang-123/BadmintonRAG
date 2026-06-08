@@ -39,6 +39,7 @@ After the virtual environment is ready, the Windows helper scripts provide the s
 .\scripts\bootstrap.ps1
 .\scripts\smoke.ps1
 .\scripts\test.ps1
+.\scripts\audit.ps1
 ```
 
 Run the deterministic forehand-clear RAG demo:
@@ -116,6 +117,14 @@ Equivalent helper scripts:
 .\scripts\bootstrap.ps1
 .\scripts\smoke.ps1
 ```
+
+Audit system readiness:
+
+```powershell
+.\scripts\audit.ps1
+```
+
+The audit reports readiness evidence for literature sources, RAG retrieval, diagnostic engine, simulation data contract, CSV trial run, API, Web viewer, optional LLM integration, and Windows scripts.
 
 Serve the HTTP API:
 
