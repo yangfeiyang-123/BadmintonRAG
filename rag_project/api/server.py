@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
 from typing import Any
 
 from rag_project.diagnostics.batch import (
@@ -12,10 +13,23 @@ from rag_project.diagnostics.batch import (
 from rag_project.diagnostics.dataset import diagnostic_dataset_from_payload
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
 def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[str, Any]) -> None:
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     handler.send_response(status)
     handler.send_header("Content-Type", "application/json; charset=utf-8")
+    handler.send_header("Access-Control-Allow-Origin", "*")
+    handler.send_header("Content-Length", str(len(body)))
+    handler.end_headers()
+    handler.wfile.write(body)
+
+
+def _bytes_response(handler: BaseHTTPRequestHandler, status: int, body: bytes, content_type: str) -> None:
+    handler.send_response(status)
+    handler.send_header("Content-Type", content_type)
+    handler.send_header("Access-Control-Allow-Origin", "*")
     handler.send_header("Content-Length", str(len(body)))
     handler.end_headers()
     handler.wfile.write(body)
@@ -36,9 +50,24 @@ def create_handler():
         def log_message(self, format: str, *args: object) -> None:
             return
 
+        def do_OPTIONS(self) -> None:
+            self.send_response(204)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
+            self.end_headers()
+
         def do_GET(self) -> None:
+            if self.path in {"/", "/viewer"}:
+                body = (ROOT / "web" / "report_viewer.html").read_bytes()
+                _bytes_response(self, 200, body, "text/html; charset=utf-8")
+                return
             if self.path == "/health":
                 _json_response(self, 200, {"status": "ok", "service": "BadmintonRAG"})
+                return
+            if self.path == "/examples/api_batch_request.json":
+                body = (ROOT / "examples" / "api_batch_request.json").read_bytes()
+                _bytes_response(self, 200, body, "application/json; charset=utf-8")
                 return
             _json_response(self, 404, {"error": "not_found", "path": self.path})
 

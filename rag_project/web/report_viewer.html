@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BadmintonRAG 动作诊断</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #667085;
+      --line: #d7dde7;
+      --accent: #0f766e;
+      --accent-2: #b42318;
+      --warn: #b54708;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0; }
+    main {
+      display: grid;
+      grid-template-columns: minmax(320px, 440px) 1fr;
+      min-height: calc(100vh - 70px);
+    }
+    aside {
+      padding: 18px;
+      border-right: 1px solid var(--line);
+      background: #fff;
+    }
+    section { padding: 18px 22px; }
+    label { display: block; margin: 0 0 8px; color: var(--muted); font-size: 13px; }
+    textarea {
+      width: 100%;
+      min-height: 520px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 0; }
+    button, select {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 12px;
+      font: inherit;
+    }
+    button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .status { margin-top: 12px; min-height: 22px; color: var(--muted); font-size: 13px; }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .metric, .report {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px;
+    }
+    .metric strong { display: block; font-size: 24px; margin-top: 4px; }
+    .report { margin-bottom: 14px; }
+    .report h2 { margin: 0 0 8px; font-size: 18px; }
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e6f4f1;
+      color: var(--accent);
+      font-size: 12px;
+      margin: 0 6px 6px 0;
+    }
+    .tag.warn { background: #fff3e8; color: var(--warn); }
+    .tag.danger { background: #fff0ee; color: var(--accent-2); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    .range {
+      height: 8px;
+      background: #ecf0f5;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .range span { display: block; height: 100%; background: var(--accent); width: 55%; }
+    .evidence { color: var(--muted); font-size: 13px; }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); }
+      .summary { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      textarea { min-height: 320px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BadmintonRAG 正手高远球诊断</h1>
+    <div class="evidence">RAG evidence + simulation signal deviation</div>
+  </header>
+  <main>
+    <aside>
+      <label for="request-json">诊断请求 JSON</label>
+      <textarea id="request-json" spellcheck="false"></textarea>
+      <div class="toolbar">
+        <select id="backend">
+          <option value="keyword">keyword</option>
+          <option value="vector">vector</option>
+        </select>
+        <button id="load-example">加载示例</button>
+        <button class="primary" id="run-diagnosis">运行诊断</button>
+      </div>
+      <div class="status" id="status"></div>
+    </aside>
+    <section>
+      <div id="report-output">
+        <div class="summary">
+          <div class="metric"><span>样本</span><strong>0</strong></div>
+          <div class="metric"><span>正确模板</span><strong>0</strong></div>
+          <div class="metric"><span>检索后端</span><strong>-</strong></div>
+          <div class="metric"><span>报告</span><strong>等待</strong></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const requestBox = document.getElementById("request-json");
+    const statusEl = document.getElementById("status");
+    const output = document.getElementById("report-output");
+    const backend = document.getElementById("backend");
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[c]);
+    }
+
+    async function loadExample() {
+      statusEl.textContent = "Loading example request...";
+      const response = await fetch("/examples/api_batch_request.json");
+      const payload = await response.json();
+      payload.retrieval_backend = backend.value;
+      requestBox.value = JSON.stringify(payload, null, 2);
+      statusEl.textContent = "Example loaded.";
+    }
+
+    function renderSummary(summary) {
+      return `<div class="summary">
+        <div class="metric"><span>样本</span><strong>${esc(summary.evaluated_samples)}</strong></div>
+        <div class="metric"><span>正确模板</span><strong>${esc(summary.correct_samples)}</strong></div>
+        <div class="metric"><span>检索后端</span><strong>${esc(summary.retrieval_backend)}</strong></div>
+        <div class="metric"><span>数据集</span><strong>${esc(summary.dataset_id)}</strong></div>
+      </div>`;
+    }
+
+    function renderDeviations(report) {
+      const rows = (report.key_deviations || []).map(d => `
+        <tr>
+          <td>${esc(d.feature_group)}/${esc(d.signal_name)}</td>
+          <td>${esc(d.phase)}</td>
+          <td><span class="tag ${d.severity === "high" ? "danger" : "warn"}">${esc(d.severity)}</span>${esc(d.direction)}</td>
+          <td>${esc(d.observed_value)} ${esc(d.unit)}</td>
+          <td>${esc(d.template_lower_bound)}-${esc(d.template_upper_bound)} ${esc(d.unit)}<div class="range"><span></span></div></td>
+        </tr>`).join("");
+      return `<table><thead><tr><th>错误信号</th><th>阶段</th><th>偏差</th><th>观测值</th><th>正确模板范围</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function renderPlan(report) {
+      return (report.correction_plan || []).map(action => `
+        <div class="metric">
+          <span class="tag">${esc(action.feature_group)}/${esc(action.target_signal)}</span>
+          <strong style="font-size:15px">${esc(action.goal)}</strong>
+          <p>${esc(action.drill)}</p>
+          <div class="evidence">验证指标：${esc(action.validation_metric)}</div>
+        </div>`).join("");
+    }
+
+    function renderEvidence(report) {
+      return (report.evidence || []).map(e => `
+        <li><code>${esc(e.source_id)}</code> ${esc(e.evidence_level)} - ${esc(e.title)}</li>`).join("");
+    }
+
+    function renderResult(data) {
+      const reports = (data.reports || []).map(report => `
+        <article class="report">
+          <h2>${esc(report.sample_id)}</h2>
+          <span class="tag danger">${esc(report.outcome_label)}</span>
+          <span class="tag">${esc(report.retrieval_backend)}</span>
+          <p>${esc(report.primary_diagnosis)}</p>
+          ${renderDeviations(report)}
+          <h3>结构化改进计划</h3>
+          <div class="summary">${renderPlan(report)}</div>
+          <h3>文献证据</h3>
+          <ul class="evidence">${renderEvidence(report)}</ul>
+        </article>`).join("");
+      output.innerHTML = renderSummary(data.summary) + reports;
+    }
+
+    async function runDiagnosis() {
+      try {
+        const payload = JSON.parse(requestBox.value);
+        payload.retrieval_backend = backend.value;
+        statusEl.textContent = "Running diagnosis...";
+        const response = await fetch("/diagnose/batch", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || data.error || "request failed");
+        renderResult(data);
+        statusEl.textContent = "Diagnosis complete.";
+      } catch (error) {
+        statusEl.textContent = `Error: ${error.message}`;
+      }
+    }
+
+    document.getElementById("load-example").addEventListener("click", loadExample);
+    document.getElementById("run-diagnosis").addEventListener("click", runDiagnosis);
+    backend.addEventListener("change", () => {
+      try {
+        const payload = JSON.parse(requestBox.value || "{}");
+        payload.retrieval_backend = backend.value;
+        requestBox.value = JSON.stringify(payload, null, 2);
+      } catch (_) {}
+    });
+    loadExample();
+  </script>
+</body>
+</html>

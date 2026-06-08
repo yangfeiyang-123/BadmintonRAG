@@ -76,6 +76,16 @@ def _request(server, method, path, payload=None):
     return response.status, data
 
 
+def _raw_request(server, method, path):
+    conn = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=5)
+    conn.request(method, path)
+    response = conn.getresponse()
+    body = response.read().decode("utf-8")
+    headers = dict(response.getheaders())
+    conn.close()
+    return response.status, headers, body
+
+
 def test_health_endpoint_returns_service_status():
     server, thread = _start_server()
     try:
@@ -125,3 +135,36 @@ def test_example_api_request_file_matches_endpoint_contract():
     assert status == 200
     assert data["summary"]["dataset_id"] == payload["dataset"]["dataset_id"]
     assert data["reports"][0]["correction_plan"]
+
+
+def test_root_serves_report_viewer_html():
+    server, thread = _start_server()
+    try:
+        status, headers, body = _raw_request(server, "GET", "/")
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
+    assert status == 200
+    assert headers["Content-Type"].startswith("text/html")
+    assert "BadmintonRAG" in body
+    assert "diagnose/batch" in body
+    assert "report-output" in body
+
+
+def test_browser_preflight_for_batch_endpoint():
+    server, thread = _start_server()
+    try:
+        conn = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=5)
+        conn.request("OPTIONS", "/diagnose/batch")
+        response = conn.getresponse()
+        headers = dict(response.getheaders())
+        response.read()
+        conn.close()
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
+    assert response.status == 204
+    assert headers["Access-Control-Allow-Origin"] == "*"
+    assert "POST" in headers["Access-Control-Allow-Methods"]
