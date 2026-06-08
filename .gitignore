@@ -5,6 +5,7 @@ __pycache__/
 *.py[cod]
 
 rag_project/outputs/
-rag_project/sources/processed/
+rag_project/sources/processed/text/
+rag_project/sources/processed/vector/
 rag_project/sources/raw/pdf/
 rag_project/sources/raw/html/

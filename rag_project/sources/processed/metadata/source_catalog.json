@@ -1,0 +1,372 @@
+[
+  {
+    "id": "BWF_COACHES",
+    "category": "official",
+    "title": "BWF Coach Education / Coach Manual Level 1 and Level 2",
+    "status": "downloaded_html_and_supplemental_pdf",
+    "source_class": "official_manual",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\BWF_COACHES.html;rag_project\\sources\\raw\\pdf\\BWF_COACH_MANUAL_L1_MIRROR.pdf"
+  },
+  {
+    "id": "BWF_SHUTTLE_TIME",
+    "category": "official",
+    "title": "BWF Shuttle Time Teacher Manual Lesson Plans and Video Clips",
+    "status": "downloaded_html",
+    "source_class": "official_manual",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\BWF_SHUTTLE_TIME.html"
+  },
+  {
+    "id": "BOOK_GRICE",
+    "category": "book",
+    "title": "Tony Grice - Badminton: Steps to Success",
+    "status": "downloaded_html",
+    "source_class": "book_preview_or_product_page",
+    "ingest_text": "false",
+    "reason": "preview or product page only",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\BOOK_GRICE.html"
+  },
+  {
+    "id": "BOOK_BRAHMS",
+    "category": "book",
+    "title": "Bernd-Volker Brahms - Badminton Handbook: Training Tactics Competition",
+    "status": "downloaded_html",
+    "source_class": "book_preview_or_product_page",
+    "ingest_text": "false",
+    "reason": "preview or product page only",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\BOOK_BRAHMS.html"
+  },
+  {
+    "id": "CN_JINYUFEIYANG",
+    "category": "course",
+    "title": "金羽飞扬--世界冠军的羽毛球课堂",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\CN_JINYUFEIYANG.html"
+  },
+  {
+    "id": "CN_ZHANG_RUILIN",
+    "category": "book",
+    "title": "张瑞林 羽毛球运动教程",
+    "status": "downloaded_html",
+    "source_class": "book_preview_or_product_page",
+    "ingest_text": "false",
+    "reason": "preview or product page only",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\CN_ZHANG_RUILIN.html"
+  },
+  {
+    "id": "REV_PHOMSOUPHA_LAFFAYE",
+    "category": "review",
+    "title": "The Science of Badminton: Game Characteristics Anthropometry Physiology Visual Fitness and Biomechanics",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_PHOMSOUPHA_LAFFAYE.html"
+  },
+  {
+    "id": "REV_WADDELL_GOWITZKE",
+    "category": "review",
+    "title": "Biomechanical Principles Applied to Badminton Power Strokes",
+    "status": "downloaded_pdf",
+    "source_class": "full_text_pdf",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\pdf\\REV_WADDELL_GOWITZKE.pdf"
+  },
+  {
+    "id": "REV_LAM_LUNGE",
+    "category": "review",
+    "title": "Biomechanics of Lower Limb in Badminton Lunge: A Systematic Scoping Review",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_LAM_LUNGE.html"
+  },
+  {
+    "id": "REV_HARYANTO_SMASH",
+    "category": "review",
+    "title": "Biomechanical Analysis of Smash Stroke in Badminton",
+    "status": "downloaded_pdf",
+    "source_class": "full_text_pdf",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\pdf\\REV_HARYANTO_SMASH.pdf"
+  },
+  {
+    "id": "REV_STEPPER_INJURIES",
+    "category": "review",
+    "title": "Systematic Review on Badminton Injuries",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_STEPPER_INJURIES.html"
+  },
+  {
+    "id": "CLEAR_SORENSEN",
+    "category": "clear",
+    "title": "A Biomechanical Analysis of Clear Strokes in Badminton",
+    "status": "downloaded_pdf",
+    "source_class": "full_text_pdf",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\pdf\\CLEAR_SORENSEN.pdf"
+  },
+  {
+    "id": "CLEAR_ZHAO_LOWER_LIMB",
+    "category": "clear",
+    "title": "A Biomechanical Analysis of Lower Limb Movement on the Backcourt Forehand Clear Stroke among Badminton Players of Different Levels",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_ZHAO_LOWER_LIMB.html"
+  },
+  {
+    "id": "CLEAR_ZHI_JIXIN_CN",
+    "category": "clear",
+    "title": "羽毛球后场正手高远球技术的运动学分析",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_ZHI_JIXIN_CN.html"
+  },
+  {
+    "id": "CLEAR_HUANG_EXPERT_NOVICE",
+    "category": "clear",
+    "title": "Differences in Backcourt Forehand Clear Stroke between Novice and Expert Players",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_HUANG_EXPERT_NOVICE.html"
+  },
+  {
+    "id": "OVERHEAD_WANG_ARM_TRUNK",
+    "category": "overhead",
+    "title": "Steps for Arm and Trunk Actions of Overhead Forehand Stroke",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\OVERHEAD_WANG_ARM_TRUNK.html"
+  },
+  {
+    "id": "SMASH_KING_JUMP",
+    "category": "smash",
+    "title": "A Correlational Analysis of Shuttlecock Speed Kinematic Determinants in the Badminton Jump Smash",
+    "status": "downloaded_pdf_static_url",
+    "source_class": "full_text_pdf",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_KING_JUMP.pdf"
+  },
+  {
+    "id": "SMASH_LI_FOREHAND",
+    "category": "smash",
+    "title": "Biomechanical Insights for Developing Evidence-Based Training Programs: Overhead Forehand Smash",
+    "status": "downloaded_pdf_static_url",
+    "source_class": "full_text_pdf",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_LI_FOREHAND.pdf"
+  },
+  {
+    "id": "SMASH_ZHANG_XFACTOR",
+    "category": "smash",
+    "title": "The Influence of X-Factor and Experience on the Quality of the Badminton Forehand Smash",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_ZHANG_XFACTOR.html"
+  },
+  {
+    "id": "SMASH_RUSDIANA_3D",
+    "category": "smash",
+    "title": "3D Kinematics Analysis of Overhead Backhand and Forehand Smashes",
+    "status": "downloaded_pdf",
+    "source_class": "full_text_pdf",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_RUSDIANA_3D.pdf"
+  },
+  {
+    "id": "SMASH_CHEN_ACTIVE_PASSIVE",
+    "category": "smash",
+    "title": "主動及被動羽球殺球動作之運動學分析",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_CHEN_ACTIVE_PASSIVE.html"
+  },
+  {
+    "id": "SMASH_FOREHAND_BACKHAND_CN",
+    "category": "smash",
+    "title": "大專甲組羽球選手正拍與反拍殺球動作之生物力學分析",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_FOREHAND_BACKHAND_CN.html"
+  },
+  {
+    "id": "SMASH_HE_FATIGUE",
+    "category": "smash",
+    "title": "Impact of Specialized Fatigue and Backhand Smash on Ankle Biomechanics",
+    "status": "downloaded_html_and_pdf",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_HE_FATIGUE.html;rag_project\\sources\\raw\\pdf\\SMASH_HE_FATIGUE.pdf"
+  },
+  {
+    "id": "SMASH_XUE_REVIEW_CN",
+    "category": "smash",
+    "title": "羽球殺球技術在運動生物力學上之應用",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_XUE_REVIEW_CN.html"
+  },
+  {
+    "id": "OVERHEAD_TSAI_THREE_STROKES",
+    "category": "overhead",
+    "title": "Biomechanical Analysis of the Upper Extremity in Three Different Badminton Overhead Strokes",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\OVERHEAD_TSAI_THREE_STROKES.html"
+  },
+  {
+    "id": "NET_HSUEH_FOREHAND",
+    "category": "net",
+    "title": "Biomechanical Analysis of Badminton Forehand Net Shots",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\NET_HSUEH_FOREHAND.html"
+  },
+  {
+    "id": "NET_TUMBLE",
+    "category": "net",
+    "title": "Biomechanical Analysis of Badminton Net Shot between Tumble and Without Tumble",
+    "status": "downloaded_pdf",
+    "source_class": "full_text_pdf",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\pdf\\NET_TUMBLE.pdf"
+  },
+  {
+    "id": "SERVE_WANG_CN",
+    "category": "serve",
+    "title": "羽球正拍與反拍發球之生物力學分析",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_WANG_CN.html"
+  },
+  {
+    "id": "SERVE_LARASATY_IMU",
+    "category": "serve",
+    "title": "Kinematic Analysis of Wrist and Elbow Angles in Badminton Serve Techniques Based on IMU Sensors",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_LARASATY_IMU.html"
+  },
+  {
+    "id": "SERVE_BETTERMINTON",
+    "category": "serve",
+    "title": "BetterMinton Service: Analyzing the Badminton Service Using Open Kinetic Chain",
+    "status": "downloaded_html_and_pdf",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_BETTERMINTON.html;rag_project\\sources\\raw\\pdf\\SERVE_BETTERMINTON.pdf"
+  },
+  {
+    "id": "LUNGE_KUNTZE_COMMON",
+    "category": "lunge",
+    "title": "A Biomechanical Analysis of Common Lunge Tasks in Badminton",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_KUNTZE_COMMON.html"
+  },
+  {
+    "id": "LUNGE_MEI_RIGHT_FORWARD",
+    "category": "lunge",
+    "title": "A Biomechanical Investigation of Right-Forward Lunging Step among Badminton Players",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_MEI_RIGHT_FORWARD.html"
+  },
+  {
+    "id": "LUNGE_WANG_SPLIT_STEP",
+    "category": "lunge",
+    "title": "Biomechanical Effects of the Badminton Split-Step on Forehand and Backhand Lunges",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_WANG_SPLIT_STEP.html"
+  },
+  {
+    "id": "LUNGE_XIE_FOREHAND_BACKHAND",
+    "category": "lunge",
+    "title": "Lower Limb Biomechanical Differences between Forehand and Backhand Lunges",
+    "status": "downloaded_html_and_pdf",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_XIE_FOREHAND_BACKHAND.html;rag_project\\sources\\raw\\pdf\\LUNGE_XIE_FOREHAND_BACKHAND.pdf"
+  },
+  {
+    "id": "LUNGE_CUI_TAKEOFF_LANDING",
+    "category": "lunge",
+    "title": "Biomechanical Analysis on Skilled Badminton Players during Take-Off and Landing",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_CUI_TAKEOFF_LANDING.html"
+  },
+  {
+    "id": "FOOTWORK_LIN_SHOE_CN",
+    "category": "footwork",
+    "title": "羽球步法以運動生物力學分析作為羽球鞋功能設計之研究",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\FOOTWORK_LIN_SHOE_CN.html"
+  },
+  {
+    "id": "FOOTWORK_START_CN",
+    "category": "footwork",
+    "title": "羽球啟動步法之起跳時機及下肢生物力學分析",
+    "status": "downloaded_html",
+    "source_class": "full_text_html",
+    "ingest_text": "true",
+    "reason": "eligible evidence source",
+    "downloaded_files": "rag_project\\sources\\raw\\html\\FOOTWORK_START_CN.html"
+  }
+]
