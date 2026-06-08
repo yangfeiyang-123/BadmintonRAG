@@ -2,6 +2,7 @@ import http.client
 import json
 import threading
 from http.server import HTTPServer
+from pathlib import Path
 
 from rag_project.api.server import create_handler
 
@@ -109,4 +110,18 @@ def test_diagnose_batch_endpoint_returns_structured_reports():
     assert data["summary"]["retrieval_backend"] == "keyword"
     assert data["reports"][0]["sample_id"] == "eval_001"
     assert data["reports"][0]["evidence"][0]["source_id"] == "CLEAR_ZHAO_LOWER_LIMB"
+    assert data["reports"][0]["correction_plan"]
+
+
+def test_example_api_request_file_matches_endpoint_contract():
+    payload = json.loads(Path("rag_project/examples/api_batch_request.json").read_text(encoding="utf-8"))
+    server, thread = _start_server()
+    try:
+        status, data = _request(server, "POST", "/diagnose/batch", payload)
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
+    assert status == 200
+    assert data["summary"]["dataset_id"] == payload["dataset"]["dataset_id"]
     assert data["reports"][0]["correction_plan"]

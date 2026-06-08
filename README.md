@@ -77,3 +77,14 @@ Available endpoints:
 - `POST /diagnose/batch`
 
 `POST /diagnose/batch` accepts JSON with `dataset`, optional `retrieval_backend`, optional `evidence_chunks`, and optional `llm`. It returns the same `summary` and structured `reports` as the batch pipeline.
+
+Example API request:
+
+```powershell
+$body = Get-Content rag_project\examples\api_batch_request.json -Raw
+Invoke-RestMethod `
+  -Uri http://127.0.0.1:8765/diagnose/batch `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body $body
+```
