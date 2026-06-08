@@ -12,13 +12,14 @@
       ],
       "retrieved_source_ids": [
         "CLEAR_ZHAO_LOWER_LIMB",
+        "SMASH_ZHANG_XFACTOR",
         "CLEAR_HUANG_EXPERT_NOVICE",
-        "REV_LAM_LUNGE",
         "LUNGE_XIE_FOREHAND_BACKHAND",
-        "LUNGE_CUI_TAKEOFF_LANDING"
+        "LUNGE_WANG_SPLIT_STEP"
       ],
       "hit": true,
-      "top_k": 5
+      "top_k": 5,
+      "retrieval_backend": "local_tfidf"
     },
     {
       "question": "专家和新手正手高远球差异是什么？",
@@ -28,12 +29,13 @@
       "retrieved_source_ids": [
         "CLEAR_HUANG_EXPERT_NOVICE",
         "CLEAR_ZHAO_LOWER_LIMB",
+        "LUNGE_XIE_FOREHAND_BACKHAND",
         "SMASH_ZHANG_XFACTOR",
-        "SERVE_WANG_CN",
-        "REV_LAM_LUNGE"
+        "SMASH_HE_FATIGUE"
       ],
       "hit": true,
-      "top_k": 5
+      "top_k": 5,
+      "retrieval_backend": "local_tfidf"
     },
     {
       "question": "上手正手击球的手臂和躯干顺序有什么证据？",
@@ -42,13 +44,14 @@
       ],
       "retrieved_source_ids": [
         "OVERHEAD_WANG_ARM_TRUNK",
-        "SMASH_ZHANG_XFACTOR",
-        "SERVE_LARASATY_IMU",
         "CLEAR_HUANG_EXPERT_NOVICE",
-        "SMASH_CHEN_ACTIVE_PASSIVE"
+        "SMASH_ZHANG_XFACTOR",
+        "SMASH_HE_FATIGUE",
+        "CLEAR_ZHAO_LOWER_LIMB"
       ],
       "hit": true,
-      "top_k": 5
+      "top_k": 5,
+      "retrieval_backend": "local_tfidf"
     },
     {
       "question": "动力链和躯干旋转为什么会影响击球质量？",
@@ -57,14 +60,15 @@
         "OVERHEAD_WANG_ARM_TRUNK"
       ],
       "retrieved_source_ids": [
+        "SERVE_BETTERMINTON",
         "SMASH_ZHANG_XFACTOR",
         "CLEAR_ZHAO_LOWER_LIMB",
-        "SMASH_CHEN_ACTIVE_PASSIVE",
-        "SERVE_LARASATY_IMU",
-        "REV_LAM_LUNGE"
+        "CLEAR_HUANG_EXPERT_NOVICE",
+        "LUNGE_XIE_FOREHAND_BACKHAND"
       ],
       "hit": true,
-      "top_k": 5
+      "top_k": 5,
+      "retrieval_backend": "local_tfidf"
     },
     {
       "question": "正手高远球标准动作和官方教学资料有哪些？",
@@ -72,14 +76,15 @@
         "BWF_COACHES"
       ],
       "retrieved_source_ids": [
-        "REV_LAM_LUNGE",
-        "CLEAR_ZHAO_LOWER_LIMB",
         "BWF_COACHES",
-        "SERVE_WANG_CN",
-        "LUNGE_WANG_SPLIT_STEP"
+        "BWF_SHUTTLE_TIME",
+        "CLEAR_ZHAO_LOWER_LIMB",
+        "SMASH_HE_FATIGUE",
+        "CLEAR_HUANG_EXPERT_NOVICE"
       ],
       "hit": true,
-      "top_k": 5
+      "top_k": 5,
+      "retrieval_backend": "local_tfidf"
     }
   ]
 }

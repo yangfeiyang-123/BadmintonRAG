@@ -34,10 +34,7 @@ python -m venv .venv
 Run the deterministic forehand-clear RAG demo:
 
 ```powershell
-.\.venv\Scripts\python.exe -m rag_project.knowledge.source_catalog
-.\.venv\Scripts\python.exe -m rag_project.knowledge.text_corpus
-.\.venv\Scripts\python.exe -m rag_project.knowledge.vector_index
-.\.venv\Scripts\python.exe -m rag_project.knowledge.retrieval_eval
+.\.venv\Scripts\python.exe -m rag_project.system.bootstrap bootstrap
 .\.venv\Scripts\python.exe -m rag_project.diagnostics.run_forehand_clear_rag_demo
 ```
 
@@ -55,8 +52,7 @@ Run batch diagnostics from a simulation dataset:
 Use the local vector index for evidence retrieval:
 
 ```powershell
-.\.venv\Scripts\python.exe -m rag_project.knowledge.text_corpus
-.\.venv\Scripts\python.exe -m rag_project.knowledge.vector_index
+.\.venv\Scripts\python.exe -m rag_project.system.bootstrap bootstrap
 .\.venv\Scripts\python.exe -m rag_project.diagnostics.batch `
   --dataset rag_project\examples\forehand_clear_dataset.json `
   --output-dir rag_project\outputs\batch_forehand_clear_vector `
@@ -64,6 +60,13 @@ Use the local vector index for evidence retrieval:
 ```
 
 The dataset JSON must contain `correct_samples` and `eval_samples`. Each sample includes `time`, `events.impact`, `joint_angles`, `muscle_activation`, and a discrete `outcome_label`.
+
+Check or rebuild system artifacts:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag_project.system.bootstrap doctor
+.\.venv\Scripts\python.exe -m rag_project.system.bootstrap bootstrap
+```
 
 Serve the HTTP API:
 
