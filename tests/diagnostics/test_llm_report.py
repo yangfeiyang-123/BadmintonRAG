@@ -1,5 +1,5 @@
 from rag_project.diagnostics.llm_report import build_diagnostic_messages, generate_diagnostic_report
-from rag_project.diagnostics.schemas import Deviation, DiagnosisReport, OutcomeLabel
+from rag_project.diagnostics.schemas import CorrectionAction, Deviation, DiagnosisReport, OutcomeLabel
 from rag_project.knowledge.evidence_index import EvidenceChunk
 
 
@@ -33,6 +33,18 @@ def _report():
         ],
         likely_mechanisms=["躯干带动不足"],
         correction_suggestions=["优先练习蹬地、转髋、转体后再带动肩肘腕释放。"],
+        correction_plan=[
+            CorrectionAction(
+                target_feature="trunk_rotation_peak",
+                target_signal="trunk_rotation",
+                feature_group="joint_angle",
+                phase="acceleration",
+                severity="high",
+                goal="提高 trunk_rotation 到正确模板范围。",
+                drill="练习蹬地、转髋、转体到击球窗口的连续释放。",
+                validation_metric="bring_observed_value_inside_template_range",
+            )
+        ],
         evidence_queries=["badminton forehand clear trunk rotation"],
     )
 
@@ -63,6 +75,8 @@ def test_build_diagnostic_messages_ground_llm_in_diagnosis_and_evidence():
     assert "trunk_rotation_peak" in combined
     assert "CLEAR_ZHAO_LOWER_LIMB" in combined
     assert "肌肉激活" in combined
+    assert "correction_plan" in combined
+    assert "bring_observed_value_inside_template_range" in combined
 
 
 def test_generate_diagnostic_report_uses_client_when_provided():

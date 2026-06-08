@@ -1,5 +1,5 @@
 from rag_project.diagnostics.explain import render_diagnosis_markdown
-from rag_project.diagnostics.schemas import Deviation, DiagnosisReport, OutcomeLabel
+from rag_project.diagnostics.schemas import CorrectionAction, Deviation, DiagnosisReport, OutcomeLabel
 from rag_project.knowledge.evidence_index import EvidenceChunk
 
 
@@ -30,6 +30,18 @@ def test_renders_markdown_with_evidence_citations():
         ],
         likely_mechanisms=["躯干带动不足"],
         correction_suggestions=["优先练习蹬地、转髋、转体后再带动肩肘腕释放。"],
+        correction_plan=[
+            CorrectionAction(
+                target_feature="trunk_rotation_peak",
+                target_signal="trunk_rotation",
+                feature_group="joint_angle",
+                phase="acceleration",
+                severity="high",
+                goal="提高 trunk_rotation 到正确模板范围。",
+                drill="练习蹬地、转髋、转体到击球窗口的连续释放。",
+                validation_metric="bring_observed_value_inside_template_range",
+            )
+        ],
         evidence_queries=["badminton forehand clear trunk rotation"],
     )
     evidence = [
@@ -58,3 +70,5 @@ def test_renders_markdown_with_evidence_citations():
     assert "36" in markdown
     assert "46" in markdown
     assert "joint_angle/trunk_rotation" in markdown
+    assert "## 结构化改进计划" in markdown
+    assert "bring_observed_value_inside_template_range" in markdown

@@ -50,6 +50,19 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
     for suggestion in report.correction_suggestions:
         lines.append(f"- {suggestion}")
 
+    lines.extend(["", "## 结构化改进计划", ""])
+    if report.correction_plan:
+        for action in report.correction_plan:
+            lines.append(
+                "- "
+                f"`{action.target_feature}`：{action.feature_group}/{action.target_signal}，"
+                f"phase={action.phase}，severity={action.severity}，"
+                f"goal={action.goal}，drill={action.drill}，"
+                f"validation={action.validation_metric}"
+            )
+    else:
+        lines.append("- 当前诊断没有生成结构化改进动作。")
+
     lines.extend(["", "## 文献证据", ""])
     if evidence:
         for chunk in evidence:

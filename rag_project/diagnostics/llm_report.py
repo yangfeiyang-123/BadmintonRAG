@@ -50,6 +50,19 @@ def _diagnosis_payload(report: DiagnosisReport) -> dict[str, object]:
         ],
         "likely_mechanisms": report.likely_mechanisms,
         "correction_suggestions": report.correction_suggestions,
+        "correction_plan": [
+            {
+                "target_feature": action.target_feature,
+                "target_signal": action.target_signal,
+                "feature_group": action.feature_group,
+                "phase": action.phase,
+                "severity": action.severity,
+                "goal": action.goal,
+                "drill": action.drill,
+                "validation_metric": action.validation_metric,
+            }
+            for action in report.correction_plan
+        ],
         "evidence_queries": report.evidence_queries,
     }
 

@@ -117,6 +117,18 @@ class Deviation:
 
 
 @dataclass(frozen=True)
+class CorrectionAction:
+    target_feature: str
+    target_signal: str
+    feature_group: str
+    phase: str
+    severity: str
+    goal: str
+    drill: str
+    validation_metric: str
+
+
+@dataclass(frozen=True)
 class DiagnosisReport:
     sample_id: str
     action_type: str
@@ -126,4 +138,5 @@ class DiagnosisReport:
     key_deviations: list[Deviation] = field(default_factory=list)
     likely_mechanisms: list[str] = field(default_factory=list)
     correction_suggestions: list[str] = field(default_factory=list)
+    correction_plan: list[CorrectionAction] = field(default_factory=list)
     evidence_queries: list[str] = field(default_factory=list)

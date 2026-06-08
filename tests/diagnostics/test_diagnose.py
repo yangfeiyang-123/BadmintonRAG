@@ -73,3 +73,19 @@ def test_deviation_identifies_joint_or_muscle_signal():
     assert trunk.signal_name == "trunk_rotation"
     assert oblique.feature_group == "muscle_activation"
     assert oblique.signal_name == "external_oblique"
+
+
+def test_diagnosis_includes_structured_correction_plan():
+    template = build_correct_template("correct", [correct_sample("a"), correct_sample("b")])
+    report = diagnose_sample(poor_sample(), template)
+
+    assert report.correction_plan
+    trunk_action = next(action for action in report.correction_plan if action.target_signal == "trunk_rotation")
+    oblique_action = next(action for action in report.correction_plan if action.target_signal == "external_oblique")
+
+    assert trunk_action.feature_group == "joint_angle"
+    assert trunk_action.target_feature == "trunk_rotation_peak"
+    assert trunk_action.goal
+    assert trunk_action.drill
+    assert trunk_action.validation_metric == "bring_observed_value_inside_template_range"
+    assert oblique_action.feature_group == "muscle_activation"
