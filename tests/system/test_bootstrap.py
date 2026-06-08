@@ -60,3 +60,17 @@ def test_bootstrap_system_generates_index_and_eval_outputs(tmp_path: Path):
         (root / "sources" / "processed" / "metadata" / "retrieval_eval_results.json").read_text(encoding="utf-8")
     )
     assert "summary" in eval_result
+
+
+def test_bootstrap_cli_exposes_smoke_command():
+    import subprocess
+    import sys
+
+    completed = subprocess.run(
+        [sys.executable, "-m", "rag_project.system.bootstrap", "--help"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "smoke" in completed.stdout

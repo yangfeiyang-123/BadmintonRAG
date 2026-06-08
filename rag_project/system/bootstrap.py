@@ -87,14 +87,22 @@ def bootstrap_system(root: Path | None = None) -> dict[str, object]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Bootstrap or inspect BadmintonRAG processed artifacts.")
-    parser.add_argument("command", choices=["doctor", "bootstrap"], help="Run a health check or regenerate artifacts.")
+    parser.add_argument(
+        "command",
+        choices=["doctor", "bootstrap", "smoke"],
+        help="Run a health check, regenerate artifacts, or run an end-to-end smoke test.",
+    )
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
 
     if args.command == "doctor":
         result = doctor_system(args.root)
-    else:
+    elif args.command == "bootstrap":
         result = bootstrap_system(args.root)
+    else:
+        from rag_project.system.smoke import smoke_system
+
+        result = smoke_system(args.root)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

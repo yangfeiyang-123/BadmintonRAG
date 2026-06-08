@@ -66,6 +66,7 @@ Check or rebuild system artifacts:
 ```powershell
 .\.venv\Scripts\python.exe -m rag_project.system.bootstrap doctor
 .\.venv\Scripts\python.exe -m rag_project.system.bootstrap bootstrap
+.\.venv\Scripts\python.exe -m rag_project.system.bootstrap smoke
 ```
 
 Serve the HTTP API:
