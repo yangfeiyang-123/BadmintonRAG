@@ -6,7 +6,7 @@ from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
 
-from rag_project.diagnostics.dataset import load_diagnostic_dataset
+from rag_project.diagnostics.dataset import DiagnosticDataset, load_diagnostic_dataset
 from rag_project.diagnostics.diagnose import diagnose_sample
 from rag_project.diagnostics.llm_report import generate_diagnostic_report
 from rag_project.diagnostics.schemas import DiagnosisReport
@@ -64,6 +64,23 @@ def _vector_rows_to_evidence(rows: list[dict[str, object]]) -> list[EvidenceChun
     ]
 
 
+def evidence_chunks_from_payload(rows: list[dict[str, object]]) -> list[EvidenceChunk]:
+    return [
+        EvidenceChunk(
+            chunk_id=str(row["chunk_id"]),
+            source_id=str(row["source_id"]),
+            title=str(row["title"]),
+            source_class=str(row["source_class"]),
+            artifact_path=str(row["artifact_path"]),
+            text=str(row["text"]),
+            token_count=int(row["token_count"]),
+            evidence_level=str(row["evidence_level"]),
+            score=float(row.get("score", 0.0)),
+        )
+        for row in rows
+    ]
+
+
 def _retrieve_for_report(
     queries: list[str],
     retrieval_backend: str,
@@ -94,15 +111,44 @@ def run_batch_diagnosis(
     use_llm: bool = False,
 ) -> dict[str, object]:
     dataset = load_diagnostic_dataset(dataset_path)
-    template = build_correct_template(f"{dataset.dataset_id}_correct_template", dataset.correct_samples)
+    result = run_batch_diagnosis_dataset(
+        dataset,
+        evidence_chunks=evidence_chunks,
+        retrieval_backend=retrieval_backend,
+        vector_index=vector_index,
+        use_llm=use_llm,
+    )
 
-    client = OpenAICompatibleClient(LLMConfig.from_env()) if use_llm else None
     output_dir.mkdir(parents=True, exist_ok=True)
     reports_dir = output_dir / "reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
 
-    report_payloads = []
     markdown_paths = []
+    for report in result["reports"]:
+        markdown = str(report.pop("markdown"))
+        markdown_path = reports_dir / f"{report['sample_id']}.md"
+        markdown_path.write_text(markdown, encoding="utf-8")
+        markdown_paths.append(str(markdown_path))
+
+    result["summary"]["json_report"] = str(output_dir / "diagnosis_reports.json")  # type: ignore[index]
+    result["summary"]["markdown_reports"] = markdown_paths  # type: ignore[index]
+    _write_json(output_dir / "diagnosis_reports.json", result["reports"])
+    _write_json(output_dir / "summary.json", result["summary"])
+    return result
+
+
+def run_batch_diagnosis_dataset(
+    dataset: DiagnosticDataset,
+    evidence_chunks: list[EvidenceChunk] | None = None,
+    retrieval_backend: str = "keyword",
+    vector_index: VectorIndex | None = None,
+    use_llm: bool = False,
+) -> dict[str, object]:
+    template = build_correct_template(f"{dataset.dataset_id}_correct_template", dataset.correct_samples)
+
+    client = OpenAICompatibleClient(LLMConfig.from_env()) if use_llm else None
+
+    report_payloads = []
     resolved_backend = "keyword"
     for sample in dataset.eval_samples:
         diagnosis = diagnose_sample(sample, template)
@@ -112,12 +158,10 @@ def run_batch_diagnosis(
             evidence_chunks=evidence_chunks,
             vector_index=vector_index,
         )
-        report_payloads.append(_report_payload(diagnosis, evidence, resolved_backend))
-
         markdown = generate_diagnostic_report(diagnosis, evidence, client=client)
-        markdown_path = reports_dir / f"{sample.sample_id}.md"
-        markdown_path.write_text(markdown, encoding="utf-8")
-        markdown_paths.append(str(markdown_path))
+        report_payload = _report_payload(diagnosis, evidence, resolved_backend)
+        report_payload["markdown"] = markdown
+        report_payloads.append(report_payload)
 
     outcome_counts = Counter(str(report["outcome_label"]) for report in report_payloads)
     summary = {
@@ -127,13 +171,8 @@ def run_batch_diagnosis(
         "evaluated_samples": len(dataset.eval_samples),
         "retrieval_backend": resolved_backend,
         "outcome_counts": dict(sorted(outcome_counts.items())),
-        "json_report": str(output_dir / "diagnosis_reports.json"),
-        "markdown_reports": markdown_paths,
     }
-    result = {"summary": summary, "reports": report_payloads}
-    _write_json(output_dir / "diagnosis_reports.json", report_payloads)
-    _write_json(output_dir / "summary.json", summary)
-    return result
+    return {"summary": summary, "reports": report_payloads}
 
 
 def main() -> None:

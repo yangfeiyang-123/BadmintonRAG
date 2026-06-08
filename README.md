@@ -64,3 +64,16 @@ Use the local vector index for evidence retrieval:
 ```
 
 The dataset JSON must contain `correct_samples` and `eval_samples`. Each sample includes `time`, `events.impact`, `joint_angles`, `muscle_activation`, and a discrete `outcome_label`.
+
+Serve the HTTP API:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag_project.api.server --host 127.0.0.1 --port 8765
+```
+
+Available endpoints:
+
+- `GET /health`
+- `POST /diagnose/batch`
+
+`POST /diagnose/batch` accepts JSON with `dataset`, optional `retrieval_backend`, optional `evidence_chunks`, and optional `llm`. It returns the same `summary` and structured `reports` as the batch pipeline.

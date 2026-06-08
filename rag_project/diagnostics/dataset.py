@@ -17,7 +17,11 @@ class DiagnosticDataset:
 
 def load_diagnostic_dataset(path: Path) -> DiagnosticDataset:
     payload = json.loads(path.read_text(encoding="utf-8"))
-    dataset_id = str(payload.get("dataset_id") or path.stem)
+    return diagnostic_dataset_from_payload(payload, default_dataset_id=path.stem)
+
+
+def diagnostic_dataset_from_payload(payload: dict[str, object], default_dataset_id: str = "diagnostic_dataset") -> DiagnosticDataset:
+    dataset_id = str(payload.get("dataset_id") or default_dataset_id)
     action_type = str(payload.get("action_type") or "forehand_clear")
     correct_samples = [DiagnosticSample.from_dict(row) for row in payload.get("correct_samples") or []]
     eval_samples = [DiagnosticSample.from_dict(row) for row in payload.get("eval_samples") or []]
