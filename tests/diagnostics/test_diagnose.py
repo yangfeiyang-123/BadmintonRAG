@@ -59,3 +59,17 @@ def test_deviation_includes_correct_template_range():
     assert trunk.template_lower_bound < trunk.template_value < trunk.template_upper_bound
     assert trunk.template_std >= 0
     assert trunk.threshold_source == "small_sample_initial_threshold"
+
+
+def test_deviation_identifies_joint_or_muscle_signal():
+    template = build_correct_template("correct", [correct_sample("a"), correct_sample("b")])
+    report = diagnose_sample(poor_sample(), template)
+    trunk = next(deviation for deviation in report.key_deviations if deviation.feature == "trunk_rotation_peak")
+    oblique = next(
+        deviation for deviation in report.key_deviations if deviation.feature == "external_oblique_activation_peak"
+    )
+
+    assert trunk.feature_group == "joint_angle"
+    assert trunk.signal_name == "trunk_rotation"
+    assert oblique.feature_group == "muscle_activation"
+    assert oblique.signal_name == "external_oblique"

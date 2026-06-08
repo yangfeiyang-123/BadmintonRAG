@@ -30,6 +30,7 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
             lines.append(
                 "- "
                 f"`{deviation.feature}`（{deviation.phase}）："
+                f"{deviation.feature_group}/{deviation.signal_name}，"
                 f"{deviation.direction} / {deviation.severity}，"
                 f"观测值 {deviation.observed_value:.4g} {deviation.unit}，"
                 f"模板均值 {deviation.template_value:.4g} {deviation.unit}，"

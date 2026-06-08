@@ -112,6 +112,8 @@ class Deviation:
     template_upper_bound: float = 0.0
     template_std: float = 0.0
     threshold_source: str = ""
+    feature_group: str = ""
+    signal_name: str = ""
 
 
 @dataclass(frozen=True)

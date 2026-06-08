@@ -34,6 +34,15 @@ def _matches_rule(feature_name: str, rule_features: list[str]) -> bool:
     return any(token in feature_name for token in rule_features)
 
 
+def _feature_source(feature_name: str) -> tuple[str, str]:
+    if "_activation_" in feature_name:
+        return "muscle_activation", feature_name.split("_activation_", maxsplit=1)[0]
+    for suffix in ("_peak_time_relative_to_impact", "_velocity_peak", "_peak"):
+        if feature_name.endswith(suffix):
+            return "joint_angle", feature_name[: -len(suffix)]
+    return "unknown", feature_name
+
+
 def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> DiagnosisReport:
     observed_features = extract_features(sample)
     rule = OUTCOME_RULES[sample.outcome_label]
@@ -48,6 +57,7 @@ def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> Diag
             continue
         if not _matches_rule(name, rule["features"]):
             continue
+        feature_group, signal_name = _feature_source(name)
         deviations.append(
             Deviation(
                 feature=name,
@@ -62,6 +72,8 @@ def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> Diag
                 template_upper_bound=template_feature.upper_bound,
                 template_std=template_feature.std,
                 threshold_source=template_feature.threshold_source,
+                feature_group=feature_group,
+                signal_name=signal_name,
             )
         )
 
