@@ -1,0 +1,85 @@
+{
+  "summary": {
+    "total": 5,
+    "hits": 5,
+    "recall_at_k": 1.0
+  },
+  "items": [
+    {
+      "question": "正手高远球下肢参与有哪些证据？",
+      "expected_source_ids": [
+        "CLEAR_ZHAO_LOWER_LIMB"
+      ],
+      "retrieved_source_ids": [
+        "CLEAR_ZHAO_LOWER_LIMB",
+        "CLEAR_HUANG_EXPERT_NOVICE",
+        "REV_LAM_LUNGE",
+        "LUNGE_XIE_FOREHAND_BACKHAND",
+        "LUNGE_CUI_TAKEOFF_LANDING"
+      ],
+      "hit": true,
+      "top_k": 5
+    },
+    {
+      "question": "专家和新手正手高远球差异是什么？",
+      "expected_source_ids": [
+        "CLEAR_HUANG_EXPERT_NOVICE"
+      ],
+      "retrieved_source_ids": [
+        "CLEAR_HUANG_EXPERT_NOVICE",
+        "CLEAR_ZHAO_LOWER_LIMB",
+        "SMASH_ZHANG_XFACTOR",
+        "SERVE_WANG_CN",
+        "REV_LAM_LUNGE"
+      ],
+      "hit": true,
+      "top_k": 5
+    },
+    {
+      "question": "上手正手击球的手臂和躯干顺序有什么证据？",
+      "expected_source_ids": [
+        "OVERHEAD_WANG_ARM_TRUNK"
+      ],
+      "retrieved_source_ids": [
+        "OVERHEAD_WANG_ARM_TRUNK",
+        "SMASH_ZHANG_XFACTOR",
+        "SERVE_LARASATY_IMU",
+        "CLEAR_HUANG_EXPERT_NOVICE",
+        "SMASH_CHEN_ACTIVE_PASSIVE"
+      ],
+      "hit": true,
+      "top_k": 5
+    },
+    {
+      "question": "动力链和躯干旋转为什么会影响击球质量？",
+      "expected_source_ids": [
+        "SMASH_ZHANG_XFACTOR",
+        "OVERHEAD_WANG_ARM_TRUNK"
+      ],
+      "retrieved_source_ids": [
+        "SMASH_ZHANG_XFACTOR",
+        "CLEAR_ZHAO_LOWER_LIMB",
+        "SMASH_CHEN_ACTIVE_PASSIVE",
+        "SERVE_LARASATY_IMU",
+        "REV_LAM_LUNGE"
+      ],
+      "hit": true,
+      "top_k": 5
+    },
+    {
+      "question": "正手高远球标准动作和官方教学资料有哪些？",
+      "expected_source_ids": [
+        "BWF_COACHES"
+      ],
+      "retrieved_source_ids": [
+        "REV_LAM_LUNGE",
+        "CLEAR_ZHAO_LOWER_LIMB",
+        "BWF_COACHES",
+        "SERVE_WANG_CN",
+        "LUNGE_WANG_SPLIT_STEP"
+      ],
+      "hit": true,
+      "top_k": 5
+    }
+  ]
+}

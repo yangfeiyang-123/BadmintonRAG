@@ -1,0 +1,48 @@
+[
+  {
+    "question": "正手高远球下肢参与有哪些证据？",
+    "queries": [
+      "forehand clear lower limb trunk rotation backcourt"
+    ],
+    "expected_source_ids": [
+      "CLEAR_ZHAO_LOWER_LIMB"
+    ]
+  },
+  {
+    "question": "专家和新手正手高远球差异是什么？",
+    "queries": [
+      "novice expert backcourt forehand clear stroke differences"
+    ],
+    "expected_source_ids": [
+      "CLEAR_HUANG_EXPERT_NOVICE"
+    ]
+  },
+  {
+    "question": "上手正手击球的手臂和躯干顺序有什么证据？",
+    "queries": [
+      "overhead forehand stroke arm trunk action sequence"
+    ],
+    "expected_source_ids": [
+      "OVERHEAD_WANG_ARM_TRUNK"
+    ]
+  },
+  {
+    "question": "动力链和躯干旋转为什么会影响击球质量？",
+    "queries": [
+      "badminton forehand stroke trunk rotation kinetic chain"
+    ],
+    "expected_source_ids": [
+      "SMASH_ZHANG_XFACTOR",
+      "OVERHEAD_WANG_ARM_TRUNK"
+    ]
+  },
+  {
+    "question": "正手高远球标准动作和官方教学资料有哪些？",
+    "queries": [
+      "BWF coach forehand clear badminton manual"
+    ],
+    "expected_source_ids": [
+      "BWF_COACHES"
+    ]
+  }
+]
