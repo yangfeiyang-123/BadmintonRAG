@@ -54,6 +54,9 @@ def smoke_system(root: Path | None = None) -> dict[str, object]:
         viewer_status, viewer_html = _text_request(port, "/")
         checks["web_viewer"] = viewer_status == 200 and "report-output" in viewer_html and "BadmintonRAG" in viewer_html
 
+        config_status, config = _json_request(port, "GET", "/config")
+        checks["config_endpoint"] = config_status == 200 and "llm" in config
+
         example_status, example = _json_request(port, "GET", "/examples/api_batch_request.json")
         checks["example_request"] = example_status == 200 and isinstance(example.get("dataset"), dict)
 

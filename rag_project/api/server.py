@@ -11,9 +11,25 @@ from rag_project.diagnostics.batch import (
     run_batch_diagnosis_dataset,
 )
 from rag_project.diagnostics.dataset import diagnostic_dataset_from_payload
+from rag_project.llm.openai_compatible import LLMConfig
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _config_payload() -> dict[str, Any]:
+    config = LLMConfig.from_env()
+    return {
+        "service": "BadmintonRAG",
+        "llm": {
+            "configured": bool(config.base_url and config.model),
+            "base_url_configured": bool(config.base_url),
+            "api_key_configured": bool(config.api_key),
+            "model": config.model,
+            "temperature": config.temperature,
+            "timeout": config.timeout,
+        },
+    }
 
 
 def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[str, Any]) -> None:
@@ -64,6 +80,9 @@ def create_handler():
                 return
             if self.path == "/health":
                 _json_response(self, 200, {"status": "ok", "service": "BadmintonRAG"})
+                return
+            if self.path == "/config":
+                _json_response(self, 200, _config_payload())
                 return
             if self.path == "/examples/api_batch_request.json":
                 body = (ROOT / "examples" / "api_batch_request.json").read_bytes()

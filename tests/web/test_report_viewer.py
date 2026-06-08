@@ -11,3 +11,6 @@ def test_report_viewer_contains_csv_upload_and_conversion_logic():
     assert "function csvRowsToDataset" in html
     assert "joint_" in html
     assert "muscle_" in html
+    assert 'id="use-llm"' in html
+    assert "/config" in html
+    assert "payload.llm" in html

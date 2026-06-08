@@ -17,6 +17,8 @@ BADMINTON_LLM_API_KEY
 BADMINTON_LLM_MODEL
 ```
 
+The Web viewer reads `GET /config` and enables the LLM report checkbox when `BADMINTON_LLM_BASE_URL` and `BADMINTON_LLM_MODEL` are set. The API key is only reported as present or absent and is never returned by the config endpoint.
+
 Downloaded third-party PDF/HTML artifacts are intentionally not committed. Rebuild or refresh them with:
 
 ```powershell

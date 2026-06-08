@@ -57,6 +57,15 @@
     }
     .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 0; }
     .file-row { margin-top: 12px; display: grid; gap: 8px; }
+    .option-row {
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .option-row input { width: 16px; height: 16px; }
     input[type="file"] {
       width: 100%;
       border: 1px solid var(--line);
@@ -158,6 +167,11 @@
         <label for="csv-file">上传仿真CSV</label>
         <input id="csv-file" type="file" accept=".csv,text/csv">
       </div>
+      <label class="option-row">
+        <input id="use-llm" type="checkbox">
+        <span>使用LLM生成报告</span>
+      </label>
+      <div class="status" id="llm-status"></div>
       <div class="status" id="status"></div>
     </aside>
     <section>
@@ -177,6 +191,8 @@
     const output = document.getElementById("report-output");
     const backend = document.getElementById("backend");
     const csvFile = document.getElementById("csv-file");
+    const useLlm = document.getElementById("use-llm");
+    const llmStatus = document.getElementById("llm-status");
 
     function esc(value) {
       return String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -189,8 +205,24 @@
       const response = await fetch("/examples/api_batch_request.json");
       const payload = await response.json();
       payload.retrieval_backend = backend.value;
+      payload.llm = useLlm.checked;
       requestBox.value = JSON.stringify(payload, null, 2);
       statusEl.textContent = "Example loaded.";
+    }
+
+    async function loadConfig() {
+      try {
+        const response = await fetch("/config");
+        const config = await response.json();
+        useLlm.disabled = !config.llm.configured;
+        useLlm.checked = false;
+        llmStatus.textContent = config.llm.configured
+          ? `LLM configured: ${config.llm.model}`
+          : "LLM not configured. Set BADMINTON_LLM_BASE_URL and BADMINTON_LLM_MODEL.";
+      } catch (error) {
+        useLlm.disabled = true;
+        llmStatus.textContent = `LLM config unavailable: ${error.message}`;
+      }
     }
 
     function parseCsv(text) {
@@ -256,6 +288,7 @@
       }
       return {
         retrieval_backend: backend.value,
+        llm: useLlm.checked,
         dataset: {
           dataset_id: datasetId,
           action_type: (correct[0] || evalSamples[0] || {}).action_type || "forehand_clear",
@@ -335,6 +368,7 @@
       try {
         const payload = JSON.parse(requestBox.value);
         payload.retrieval_backend = backend.value;
+        payload.llm = useLlm.checked;
         statusEl.textContent = "Running diagnosis...";
         const response = await fetch("/diagnose/batch", {
           method: "POST",
@@ -362,9 +396,18 @@
       try {
         const payload = JSON.parse(requestBox.value || "{}");
         payload.retrieval_backend = backend.value;
+        payload.llm = useLlm.checked;
         requestBox.value = JSON.stringify(payload, null, 2);
       } catch (_) {}
     });
+    useLlm.addEventListener("change", () => {
+      try {
+        const payload = JSON.parse(requestBox.value || "{}");
+        payload.llm = useLlm.checked;
+        requestBox.value = JSON.stringify(payload, null, 2);
+      } catch (_) {}
+    });
+    loadConfig();
     loadExample();
   </script>
 </body>

@@ -169,6 +169,25 @@ def test_server_serves_example_simulation_csv():
     assert "eval_ball_high_not_far" in body
 
 
+def test_config_endpoint_reports_llm_status_without_leaking_key(monkeypatch):
+    monkeypatch.setenv("BADMINTON_LLM_BASE_URL", "http://localhost:8000/v1")
+    monkeypatch.setenv("BADMINTON_LLM_API_KEY", "secret-key")
+    monkeypatch.setenv("BADMINTON_LLM_MODEL", "test-model")
+    server, thread = _start_server()
+    try:
+        status, data = _request(server, "GET", "/config")
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
+    assert status == 200
+    assert data["llm"]["configured"] is True
+    assert data["llm"]["base_url_configured"] is True
+    assert data["llm"]["api_key_configured"] is True
+    assert data["llm"]["model"] == "test-model"
+    assert "secret-key" not in json.dumps(data)
+
+
 def test_browser_preflight_for_batch_endpoint():
     server, thread = _start_server()
     try:
