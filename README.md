@@ -91,6 +91,17 @@ Validate a real simulation CSV before diagnosis:
 
 The full input mapping is documented in `docs/simulation_data_contract.md`.
 
+Run a full real-data trial from CSV:
+
+```powershell
+.\scripts\run-csv.ps1 `
+  -CsvDataset rag_project\examples\forehand_clear_simulation.csv `
+  -OutputDir rag_project\outputs\trial_run `
+  -RetrievalBackend keyword
+```
+
+This performs contract validation, batch diagnosis, Markdown report generation, and writes `report_index.html` in the output directory. Replace `rag_project\examples\forehand_clear_simulation.csv` with your own simulation CSV when ready.
+
 Check or rebuild system artifacts:
 
 ```powershell

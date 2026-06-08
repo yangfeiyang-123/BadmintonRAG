@@ -6,6 +6,7 @@ def test_windows_scripts_exist_and_call_expected_modules():
         "bootstrap.ps1": "rag_project.system.bootstrap bootstrap",
         "smoke.ps1": "rag_project.system.bootstrap smoke",
         "serve.ps1": "rag_project.api.server",
+        "run-csv.ps1": "rag_project.diagnostics.trial_run",
         "test.ps1": "pytest",
     }
 
