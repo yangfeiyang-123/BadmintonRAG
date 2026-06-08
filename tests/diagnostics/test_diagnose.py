@@ -51,3 +51,11 @@ def test_diagnoses_ball_high_not_far_with_relevant_deviations():
     assert "trunk_rotation_peak" in names
     assert "forearm_pronation_peak" in names
     assert "躯干带动不足" in report.likely_mechanisms
+def test_deviation_includes_correct_template_range():
+    template = build_correct_template("correct", [correct_sample("a"), correct_sample("b")])
+    report = diagnose_sample(poor_sample(), template)
+    trunk = next(deviation for deviation in report.key_deviations if deviation.feature == "trunk_rotation_peak")
+
+    assert trunk.template_lower_bound < trunk.template_value < trunk.template_upper_bound
+    assert trunk.template_std >= 0
+    assert trunk.threshold_source == "small_sample_initial_threshold"

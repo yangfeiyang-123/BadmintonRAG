@@ -32,7 +32,10 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
                 f"`{deviation.feature}`（{deviation.phase}）："
                 f"{deviation.direction} / {deviation.severity}，"
                 f"观测值 {deviation.observed_value:.4g} {deviation.unit}，"
-                f"模板均值 {deviation.template_value:.4g} {deviation.unit}。"
+                f"模板均值 {deviation.template_value:.4g} {deviation.unit}，"
+                f"正确模板范围 {deviation.template_lower_bound:.4g}-"
+                f"{deviation.template_upper_bound:.4g} {deviation.unit}，"
+                f"std={deviation.template_std:.4g}，threshold={deviation.threshold_source}。"
                 f"{deviation.interpretation}"
             )
     else:

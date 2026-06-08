@@ -108,6 +108,10 @@ class Deviation:
     template_value: float
     unit: str
     interpretation: str
+    template_lower_bound: float = 0.0
+    template_upper_bound: float = 0.0
+    template_std: float = 0.0
+    threshold_source: str = ""
 
 
 @dataclass(frozen=True)

@@ -20,6 +20,10 @@ def test_renders_markdown_with_evidence_citations():
                 template_value=42.0,
                 unit="degree",
                 interpretation="躯干旋转峰值低于正确模板。",
+                template_lower_bound=36.0,
+                template_upper_bound=46.0,
+                template_std=2.0,
+                threshold_source="small_sample_initial_threshold",
             )
         ],
         likely_mechanisms=["躯干带动不足"],
@@ -48,3 +52,6 @@ def test_renders_markdown_with_evidence_citations():
     assert "CLEAR_ZHAO_LOWER_LIMB" in markdown
     assert "full_text_html" in markdown
     assert "direct_biomechanics_forehand_clear" in markdown
+    assert "正确模板范围" in markdown
+    assert "36" in markdown
+    assert "46" in markdown

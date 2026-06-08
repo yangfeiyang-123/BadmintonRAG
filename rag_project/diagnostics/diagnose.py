@@ -58,6 +58,10 @@ def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> Diag
                 template_value=template_feature.mean,
                 unit=template_feature.unit,
                 interpretation=f"{name} 相对正确模板出现 {severity} 偏差。",
+                template_lower_bound=template_feature.lower_bound,
+                template_upper_bound=template_feature.upper_bound,
+                template_std=template_feature.std,
+                threshold_source=template_feature.threshold_source,
             )
         )
 
