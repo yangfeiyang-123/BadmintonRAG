@@ -86,7 +86,7 @@ Serve the HTTP API:
 .\.venv\Scripts\python.exe -m rag_project.api.server --host 127.0.0.1 --port 8765
 ```
 
-Open the report viewer at `http://127.0.0.1:8765/`. The viewer can load the example JSON request, call the batch diagnosis API, and render deviation signals, correct-template ranges, correction plans, and evidence.
+Open the report viewer at `http://127.0.0.1:8765/`. The viewer can load the example JSON request, load or upload simulation CSV, call the batch diagnosis API, and render deviation signals, correct-template ranges, correction plans, and evidence.
 
 Available endpoints:
 

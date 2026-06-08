@@ -69,6 +69,10 @@ def create_handler():
                 body = (ROOT / "examples" / "api_batch_request.json").read_bytes()
                 _bytes_response(self, 200, body, "application/json; charset=utf-8")
                 return
+            if self.path == "/examples/forehand_clear_simulation.csv":
+                body = (ROOT / "examples" / "forehand_clear_simulation.csv").read_bytes()
+                _bytes_response(self, 200, body, "text/csv; charset=utf-8")
+                return
             _json_response(self, 404, {"error": "not_found", "path": self.path})
 
         def do_POST(self) -> None:

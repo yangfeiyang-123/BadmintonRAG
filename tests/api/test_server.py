@@ -150,6 +150,23 @@ def test_root_serves_report_viewer_html():
     assert "BadmintonRAG" in body
     assert "diagnose/batch" in body
     assert "report-output" in body
+    assert 'id="csv-file"' in body
+    assert 'id="load-csv-example"' in body
+    assert "csvRowsToDataset" in body
+
+
+def test_server_serves_example_simulation_csv():
+    server, thread = _start_server()
+    try:
+        status, headers, body = _raw_request(server, "GET", "/examples/forehand_clear_simulation.csv")
+    finally:
+        server.shutdown()
+        thread.join(timeout=2)
+
+    assert status == 200
+    assert headers["Content-Type"].startswith("text/csv")
+    assert "sample_id,split,action_type" in body
+    assert "eval_ball_high_not_far" in body
 
 
 def test_browser_preflight_for_batch_endpoint():

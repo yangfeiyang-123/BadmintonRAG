@@ -56,6 +56,14 @@
       line-height: 1.45;
     }
     .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 0; }
+    .file-row { margin-top: 12px; display: grid; gap: 8px; }
+    input[type="file"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px;
+      background: #fff;
+    }
     button, select {
       min-height: 36px;
       border: 1px solid var(--line);
@@ -143,7 +151,12 @@
           <option value="vector">vector</option>
         </select>
         <button id="load-example">加载示例</button>
+        <button id="load-csv-example">加载CSV示例</button>
         <button class="primary" id="run-diagnosis">运行诊断</button>
+      </div>
+      <div class="file-row">
+        <label for="csv-file">上传仿真CSV</label>
+        <input id="csv-file" type="file" accept=".csv,text/csv">
       </div>
       <div class="status" id="status"></div>
     </aside>
@@ -163,6 +176,7 @@
     const statusEl = document.getElementById("status");
     const output = document.getElementById("report-output");
     const backend = document.getElementById("backend");
+    const csvFile = document.getElementById("csv-file");
 
     function esc(value) {
       return String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -177,6 +191,92 @@
       payload.retrieval_backend = backend.value;
       requestBox.value = JSON.stringify(payload, null, 2);
       statusEl.textContent = "Example loaded.";
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [], value = "", quoted = false;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i], next = text[i + 1];
+        if (quoted && ch === '"' && next === '"') {
+          value += '"';
+          i++;
+        } else if (ch === '"') {
+          quoted = !quoted;
+        } else if (!quoted && ch === ",") {
+          row.push(value);
+          value = "";
+        } else if (!quoted && (ch === "\n" || ch === "\r")) {
+          if (ch === "\r" && next === "\n") i++;
+          row.push(value);
+          if (row.some(cell => cell !== "")) rows.push(row);
+          row = [];
+          value = "";
+        } else {
+          value += ch;
+        }
+      }
+      row.push(value);
+      if (row.some(cell => cell !== "")) rows.push(row);
+      if (rows.length === 0) return [];
+      const headers = rows[0].map(header => header.trim());
+      return rows.slice(1).map(cells => Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? ""])));
+    }
+
+    function firstValue(rows, column) {
+      const row = rows.find(item => item[column] !== undefined && item[column] !== "");
+      return row ? Number(row[column]) : undefined;
+    }
+
+    function csvRowsToDataset(rows, datasetId = "web_csv_dataset") {
+      const grouped = new Map();
+      for (const row of rows) {
+        if (!grouped.has(row.sample_id)) grouped.set(row.sample_id, []);
+        grouped.get(row.sample_id).push(row);
+      }
+      const correct = [], evalSamples = [];
+      for (const [sampleId, sampleRows] of grouped) {
+        sampleRows.sort((a, b) => Number(a.time) - Number(b.time));
+        const first = sampleRows[0];
+        const columns = Object.keys(first);
+        const eventColumns = columns.filter(name => name.startsWith("event_"));
+        const jointColumns = columns.filter(name => name.startsWith("joint_"));
+        const muscleColumns = columns.filter(name => name.startsWith("muscle_"));
+        const sample = {
+          sample_id: sampleId,
+          action_type: first.action_type,
+          outcome_label: first.outcome_label,
+          time: sampleRows.map(row => Number(row.time)),
+          events: Object.fromEntries(eventColumns.map(column => [column.slice(6), firstValue(sampleRows, column)]).filter(([, value]) => Number.isFinite(value))),
+          joint_angles: Object.fromEntries(jointColumns.map(column => [column.slice(6), sampleRows.map(row => Number(row[column]))])),
+          muscle_activation: Object.fromEntries(muscleColumns.map(column => [column.slice(7), sampleRows.map(row => Number(row[column]))]))
+        };
+        if (first.split === "correct") correct.push(sample);
+        if (first.split === "eval") evalSamples.push(sample);
+      }
+      return {
+        retrieval_backend: backend.value,
+        dataset: {
+          dataset_id: datasetId,
+          action_type: (correct[0] || evalSamples[0] || {}).action_type || "forehand_clear",
+          correct_samples: correct,
+          eval_samples: evalSamples
+        }
+      };
+    }
+
+    function loadCsvText(text, datasetId) {
+      const rows = parseCsv(text);
+      const payload = csvRowsToDataset(rows, datasetId);
+      requestBox.value = JSON.stringify(payload, null, 2);
+      statusEl.textContent = `CSV loaded: ${payload.dataset.correct_samples.length} correct, ${payload.dataset.eval_samples.length} eval.`;
+    }
+
+    async function loadCsvExample() {
+      statusEl.textContent = "Loading CSV example...";
+      const response = await fetch("/examples/forehand_clear_simulation.csv");
+      const csvText = await response.text();
+      loadCsvText(csvText, "forehand_clear_simulation");
     }
 
     function renderSummary(summary) {
@@ -251,7 +351,13 @@
     }
 
     document.getElementById("load-example").addEventListener("click", loadExample);
+    document.getElementById("load-csv-example").addEventListener("click", loadCsvExample);
     document.getElementById("run-diagnosis").addEventListener("click", runDiagnosis);
+    csvFile.addEventListener("change", async () => {
+      const file = csvFile.files && csvFile.files[0];
+      if (!file) return;
+      loadCsvText(await file.text(), file.name.replace(/\.[^.]+$/, ""));
+    });
     backend.addEventListener("change", () => {
       try {
         const payload = JSON.parse(requestBox.value || "{}");
