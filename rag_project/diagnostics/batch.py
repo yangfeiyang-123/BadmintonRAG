@@ -6,6 +6,7 @@ from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
 
+from rag_project.diagnostics.csv_adapter import load_dataset_from_csv
 from rag_project.diagnostics.dataset import DiagnosticDataset, load_diagnostic_dataset
 from rag_project.diagnostics.diagnose import diagnose_sample
 from rag_project.diagnostics.llm_report import generate_diagnostic_report
@@ -177,7 +178,9 @@ def run_batch_diagnosis_dataset(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run batch forehand-clear diagnostics from a simulation dataset.")
-    parser.add_argument("--dataset", type=Path, required=True, help="Path to dataset JSON with correct_samples/eval_samples.")
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--dataset", type=Path, help="Path to dataset JSON with correct_samples/eval_samples.")
+    source.add_argument("--csv-dataset", type=Path, help="Path to simulation CSV rows using joint_* and muscle_* columns.")
     parser.add_argument("--output-dir", type=Path, required=True, help="Directory for JSON and Markdown reports.")
     parser.add_argument(
         "--retrieval-backend",
@@ -188,12 +191,33 @@ def main() -> None:
     parser.add_argument("--llm", action="store_true", help="Call an OpenAI-compatible LLM using BADMINTON_LLM_* env vars.")
     args = parser.parse_args()
 
-    result = run_batch_diagnosis(
-        args.dataset,
-        args.output_dir,
-        retrieval_backend=args.retrieval_backend,
-        use_llm=args.llm,
-    )
+    if args.csv_dataset:
+        dataset = load_dataset_from_csv(args.csv_dataset)
+        result = run_batch_diagnosis_dataset(
+            dataset,
+            retrieval_backend=args.retrieval_backend,
+            use_llm=args.llm,
+        )
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        reports_dir = args.output_dir / "reports"
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        markdown_paths = []
+        for report in result["reports"]:
+            markdown = str(report.pop("markdown"))
+            markdown_path = reports_dir / f"{report['sample_id']}.md"
+            markdown_path.write_text(markdown, encoding="utf-8")
+            markdown_paths.append(str(markdown_path))
+        result["summary"]["json_report"] = str(args.output_dir / "diagnosis_reports.json")  # type: ignore[index]
+        result["summary"]["markdown_reports"] = markdown_paths  # type: ignore[index]
+        _write_json(args.output_dir / "diagnosis_reports.json", result["reports"])
+        _write_json(args.output_dir / "summary.json", result["summary"])
+    else:
+        result = run_batch_diagnosis(
+            args.dataset,
+            args.output_dir,
+            retrieval_backend=args.retrieval_backend,
+            use_llm=args.llm,
+        )
     print(json.dumps(result["summary"], ensure_ascii=False, indent=2))
 
 

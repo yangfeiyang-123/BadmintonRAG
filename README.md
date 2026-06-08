@@ -61,6 +61,17 @@ Use the local vector index for evidence retrieval:
 
 The dataset JSON must contain `correct_samples` and `eval_samples`. Each sample includes `time`, `events.impact`, `joint_angles`, `muscle_activation`, and a discrete `outcome_label`.
 
+Run batch diagnostics from a simulation CSV:
+
+```powershell
+.\.venv\Scripts\python.exe -m rag_project.diagnostics.batch `
+  --csv-dataset rag_project\examples\forehand_clear_simulation.csv `
+  --output-dir rag_project\outputs\batch_forehand_clear_csv `
+  --retrieval-backend keyword
+```
+
+CSV rows represent time points. Required columns are `sample_id`, `split`, `action_type`, `outcome_label`, and `time`. Use `split=correct` for template samples and `split=eval` for samples to diagnose. Event columns use `event_` prefixes such as `event_impact`; joint angle columns use `joint_` prefixes such as `joint_trunk_rotation`; muscle activation columns use `muscle_` prefixes such as `muscle_external_oblique`.
+
 Check or rebuild system artifacts:
 
 ```powershell
