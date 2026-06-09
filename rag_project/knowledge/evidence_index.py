@@ -5,7 +5,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from rag_project.knowledge.extract_text import extract_html_text
+from rag_project.knowledge.extract_text import extract_html_text, extract_text
 from rag_project.knowledge.source_classifier import classify_source
 
 
@@ -23,6 +23,9 @@ class EvidenceChunk:
     token_count: int
     evidence_level: str = "mechanistic_inference"
     score: float = 0.0
+    # Optional: concept-KB chunks reference multiple package source ids (e.g. ("S04","S08")).
+    # Empty for legacy single-source HTML/PDF chunks. Backward compatible.
+    source_ids: tuple[str, ...] = ()
 
 
 def _tokenize(text: str) -> list[str]:
@@ -104,7 +107,14 @@ def load_classified_sources(download_results_path: Path) -> list[dict[str, str]]
     return rows
 
 
-def build_evidence_index(sources: list[dict[str, str]], chunk_size: int = 160, overlap: int = 35) -> list[EvidenceChunk]:
+def build_evidence_index(
+    sources: list[dict[str, str]], chunk_size: int = 160, overlap: int = 35, include_pdf: bool = False
+) -> list[EvidenceChunk]:
+    # INTEG-04: PDF extraction is opt-in (include_pdf=True) so the default legacy
+    # keyword/vector corpus is unchanged. The primary evidence path is now the
+    # hybrid concept KB (which already covers S04/S05), so PDFs are a keyword-backend
+    # enhancement rather than a default behaviour change.
+    allowed_suffixes = {".html", ".pdf"} if include_pdf else {".html"}
     chunks: list[EvidenceChunk] = []
     for source in sources:
         source_class = source.get("source_class") or classify_source(
@@ -114,10 +124,10 @@ def build_evidence_index(sources: list[dict[str, str]], chunk_size: int = 160, o
             continue
 
         artifact = _first_existing_artifact(source.get("downloaded_files", ""))
-        if artifact is None or artifact.suffix.lower() != ".html":
+        if artifact is None or artifact.suffix.lower() not in allowed_suffixes:
             continue
 
-        text = extract_html_text(artifact)
+        text = extract_text(artifact)
         if not text:
             continue
         for index, chunk_text in enumerate(_split_words(text, chunk_size, overlap), start=1):

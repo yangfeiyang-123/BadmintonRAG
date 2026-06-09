@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BadmintonForehandClearRAGSource",
+  "description": "Source catalog record. The primary key is 'id' (e.g., S05); chunk.source_ids reference this id. evidence_level here is the SOURCE-level fine-grained label (as in badminton_forehand_clear_sources.csv); evidence_layer ties it to the coarse CHUNK-level vocabulary used by rag_chunk.schema.json.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "year",
+    "source_type",
+    "evidence_level",
+    "browse_url"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^S[0-9]{2,}$",
+      "description": "Stable primary key, e.g., S05. chunk.source_ids reference this. Pattern allows S100+."
+    },
+    "legacy_id": {
+      "type": "string",
+      "description": "Corresponding rag_project legacy string id (e.g., CLEAR_SORENSEN). See source_id_crosswalk.csv. Empty if no mapping."
+    },
+    "title": {
+      "type": "string"
+    },
+    "authors": {
+      "type": "string"
+    },
+    "year": {
+      "type": "string",
+      "description": "Year as string. Allows 'n.d.' and ranges like '2010/2011'; do NOT change to integer."
+    },
+    "source_type": {
+      "type": "string"
+    },
+    "evidence_level": {
+      "type": "string",
+      "description": "SOURCE-level fine-grained label (free text matching sources.csv), distinct from the coarse chunk evidence layer."
+    },
+    "evidence_layer": {
+      "type": "string",
+      "enum": [
+        "coaching_direct_clear",
+        "peer_reviewed_direct_clear",
+        "overhead_multi_stroke",
+        "skill_level_overhead",
+        "review",
+        "smash_analogy",
+        "emg_smash_analogy",
+        "msk_methodological",
+        "mixed_direct_and_analogy",
+        "dataset",
+        "injury_review",
+        "implementation"
+      ],
+      "description": "Coarse evidence layer this source maps to; same vocabulary as chunk.evidence_level. Bridges source label and chunk layer."
+    },
+    "stroke_scope": {
+      "type": "string"
+    },
+    "key_use": {
+      "type": "string"
+    },
+    "browse_url": {
+      "type": "string"
+    },
+    "download_url": {
+      "type": "string"
+    },
+    "doi": {
+      "type": "string"
+    },
+    "license_or_access": {
+      "type": "string"
+    },
+    "content_hash": {
+      "type": "string",
+      "description": "sha256 of fetched artifact, for reproducibility/version pinning."
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

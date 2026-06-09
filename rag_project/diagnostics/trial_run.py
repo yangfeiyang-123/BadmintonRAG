@@ -106,7 +106,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run a full CSV trial: contract check, diagnosis, and report index.")
     parser.add_argument("--csv-dataset", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
-    parser.add_argument("--retrieval-backend", choices=["keyword", "vector"], default="keyword")
+    parser.add_argument("--retrieval-backend", choices=["keyword", "vector", "hybrid"], default="keyword")
     parser.add_argument("--llm", action="store_true", help="Call an OpenAI-compatible LLM using BADMINTON_LLM_* env vars.")
     args = parser.parse_args(argv)
 

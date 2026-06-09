@@ -95,6 +95,13 @@ def _retrieve_for_report(
         index = vector_index if vector_index is not None else _load_default_vector_index()
         rows = index.search(" ".join(queries), top_k=4, max_per_source=1)
         return f"vector:{index.backend}", _vector_rows_to_evidence(rows)
+    if retrieval_backend == "hybrid":
+        # INTEG-05: retrieve over the S01–S21 concept KB with BM25(+dense) + §10.2 evidence boost.
+        from rag_project.knowledge.hybrid_retrieval import get_default_retriever
+
+        retriever = get_default_retriever()
+        evidence = retriever.retrieve_evidence(queries, top_k=4, max_per_source=1)
+        return f"hybrid:{'bm25+dense' if retriever.dense_enabled else 'bm25'}", evidence
     raise ValueError(f"Unsupported retrieval_backend: {retrieval_backend}")
 
 
@@ -184,9 +191,9 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True, help="Directory for JSON and Markdown reports.")
     parser.add_argument(
         "--retrieval-backend",
-        choices=["keyword", "vector"],
+        choices=["keyword", "vector", "hybrid"],
         default="keyword",
-        help="Evidence retrieval backend.",
+        help="Evidence retrieval backend. 'hybrid' = concept KB BM25(+dense bge-m3) with evidence boost.",
     )
     parser.add_argument("--llm", action="store_true", help="Call an OpenAI-compatible LLM using BADMINTON_LLM_* env vars.")
     args = parser.parse_args()

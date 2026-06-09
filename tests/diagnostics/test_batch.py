@@ -73,7 +73,8 @@ def test_run_batch_diagnosis_writes_json_summary_and_markdown(tmp_path: Path):
 
     markdown = (tmp_path / "out" / "reports" / "eval_001.md").read_text(encoding="utf-8")
     assert "# 正手高远球诊断报告：eval_001" in markdown
-    assert "CLEAR_ZHAO_LOWER_LIMB" in markdown
+    # INTEG-06: legacy source id is cited as [S06] in the rendered markdown (JSON payload keeps source_id).
+    assert "[S06]" in markdown
 
 
 def test_run_batch_diagnosis_can_use_vector_retrieval_backend(tmp_path: Path):

@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BadmintonForehandClearRAGChunk",
+  "description": "Concept-level chunk for the badminton forehand-clear RAG knowledge base. evidence_level here is the CHUNK-level coarse evidence layer, decoupled from the SOURCE-level fine-grained label in badminton_forehand_clear_sources.csv. See the mapping table in the knowledge base §8.2.",
+  "type": "object",
+  "required": [
+    "chunk_id",
+    "text",
+    "source_ids",
+    "stroke",
+    "phase",
+    "evidence_level",
+    "body_region",
+    "joint_dof",
+    "muscle_groups",
+    "metrics",
+    "limits_of_evidence",
+    "retrieval_tags"
+  ],
+  "properties": {
+    "chunk_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Stable unique id in snake_case, e.g., bh_clear_phase_p3_forward_swing_001"
+    },
+    "text": {
+      "type": "string",
+      "description": "Chunk body in Chinese. Cite source ids like [S05]. Tag analogy sources inline, e.g., [S11^smash] / [S17^msk], so the analogy boundary survives chunk-level retrieval."
+    },
+    "source_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^S[0-9]{2,}$"
+      },
+      "description": "References source.id in the source catalog. Pattern allows S100+ as the corpus grows."
+    },
+    "stroke": {
+      "type": "string",
+      "enum": [
+        "forehand_overhead_clear",
+        "backcourt_forehand_clear",
+        "overhead_forehand_general",
+        "smash_analogy",
+        "injury_general",
+        "dataset",
+        "general_badminton"
+      ]
+    },
+    "stroke_aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "phase": {
+      "type": "string",
+      "description": "Stage key bound to the P0-P5 model in §3.2. Mapping: whole_stroke=整套动作; movement_to_rearcourt=P0; preparation=P1; backswing_loading=P2; forward_swing_acceleration=P3; impact=P4; follow_through_recovery=P5; validation/rag_instruction/source_note=非阶段类 chunk.",
+      "enum": [
+        "whole_stroke",
+        "movement_to_rearcourt",
+        "preparation",
+        "backswing_loading",
+        "forward_swing_acceleration",
+        "impact",
+        "follow_through_recovery",
+        "validation",
+        "rag_instruction",
+        "source_note"
+      ]
+    },
+    "phase_id": {
+      "type": "string",
+      "enum": ["P0", "P1", "P2", "P3", "P4", "P5", "NA"],
+      "description": "P0-P5 stage id from §3.2; NA for non-stage chunks (definition/metric/implementation/source_note)."
+    },
+    "body_region": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "May be empty [] for non-action chunks (definition/implementation/source_note)."
+    },
+    "joint_dof": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "May be empty [] for non-action chunks."
+    },
+    "muscle_groups": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Muscle GROUP names only; never finger intrinsic/extrinsic muscles (boundary §0). May be empty []."
+    },
+    "excluded_muscle_groups": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Muscles explicitly excluded by the 'no hand/fingers' boundary, e.g., flexor_digitorum_superficialis, flexor_digitorum_profundus, extensor_digitorum, hand_intrinsics."
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "May be empty [] for non-metric chunks."
+    },
+    "evidence_level": {
+      "type": "string",
+      "description": "CHUNK-level coarse evidence layer. Maps to KB §8.1 priority groups A-E plus method/implementation. Distinct from source.evidence_level.",
+      "enum": [
+        "coaching_direct_clear",
+        "peer_reviewed_direct_clear",
+        "overhead_multi_stroke",
+        "skill_level_overhead",
+        "review",
+        "smash_analogy",
+        "emg_smash_analogy",
+        "msk_methodological",
+        "mixed_direct_and_analogy",
+        "dataset",
+        "injury_review",
+        "implementation"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "claim_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "definition",
+          "technique",
+          "kinematics",
+          "dynamics",
+          "muscle_activation",
+          "validation",
+          "limitation",
+          "implementation",
+          "injury_safety",
+          "evidence_grading"
+        ]
+      }
+    },
+    "retrieval_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "limits_of_evidence": {
+      "type": "string",
+      "description": "Required. State direct-vs-analogy boundary and what must NOT be over-claimed. Use '' only for pure implementation chunks."
+    },
+    "content_hash": {
+      "type": "string",
+      "description": "sha256 of normalized text, for reproducible eval/version pinning."
+    },
+    "chunk_schema_version": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    }
+  },
+  "additionalProperties": false
+}

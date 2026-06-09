@@ -79,7 +79,8 @@ def test_renders_markdown_with_evidence_citations():
     assert "击球阶段向前动量不足" in markdown
     assert "trunk_rotation_peak" in markdown
     assert "CLEAR_ZHAO_LOWER_LIMB" in markdown
-    assert "full_text_html" in markdown
+    # INTEG-06: evidence is cited as [Sxx] (legacy id translated via crosswalk) with the evidence-layer label.
+    assert "[S06]" in markdown
     assert "direct_biomechanics_forehand_clear" in markdown
     assert "正确模板范围" in markdown
     assert "36" in markdown

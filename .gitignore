@@ -4,11 +4,19 @@
 __pycache__/
 *.py[cod]
 
+# Local dense-embedding model cache (bge-m3, ~2.3GB) — do not commit
+.models/
+# Cached concept-KB dense embeddings (regenerated on demand)
+rag_project/sources/processed/vector/concept_dense_*.npy
+
 rag_project/outputs/
 rag_project/sources/processed/text/
 rag_project/sources/processed/vector/
 rag_project/sources/raw/pdf/
 rag_project/sources/raw/html/
+
+# Editor workspace config (machine-specific)
+*.code-workspace
 
 # Local launch scripts / env files that may hold secrets (never commit)
 *.local.ps1

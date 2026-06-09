@@ -1,0 +1,38 @@
+legacy_id,package_id,title,package_evidence_level,evidence_layer,match_type
+BWF_COACHES,S01,BWF Coach Education / Coach Manual Level 1 and Level 2,official_coaching_direct_clear,coaching_direct_clear,mapped
+BWF_SHUTTLE_TIME,,BWF Shuttle Time Teacher Manual Lesson Plans and Video Clips,,,none
+BOOK_GRICE,,Tony Grice - Badminton: Steps to Success,,,none
+BOOK_BRAHMS,,Bernd-Volker Brahms - Badminton Handbook: Training Tactics Competition,,,none
+CN_JINYUFEIYANG,,金羽飞扬--世界冠军的羽毛球课堂,,,none
+CN_ZHANG_RUILIN,,张瑞林 羽毛球运动教程,,,none
+REV_PHOMSOUPHA_LAFFAYE,S10,The Science of Badminton: Game Characteristics Anthropometry Physiology Visual Fitness and Biomechanics,badminton_biomechanics_review,review,mapped
+REV_WADDELL_GOWITZKE,S04,Biomechanical Principles Applied to Badminton Power Strokes,biomechanics_overhead_power_strokes,mixed_direct_and_analogy,mapped
+REV_LAM_LUNGE,,Biomechanics of Lower Limb in Badminton Lunge: A Systematic Scoping Review,,,none
+REV_HARYANTO_SMASH,,Biomechanical Analysis of Smash Stroke in Badminton,,,none
+REV_STEPPER_INJURIES,,Systematic Review on Badminton Injuries,,,none
+CLEAR_SORENSEN,S05,A Biomechanical Analysis of Clear Strokes in Badminton,peer_reviewed_direct_clear,peer_reviewed_direct_clear,mapped
+CLEAR_ZHAO_LOWER_LIMB,S06,A Biomechanical Analysis of Lower Limb Movement on the Backcourt Forehand Clear Stroke among Badminton Players of Different Levels,peer_reviewed_direct_clear_lower_limb,peer_reviewed_direct_clear,mapped
+CLEAR_ZHI_JIXIN_CN,,羽毛球后场正手高远球技术的运动学分析,,,none
+CLEAR_HUANG_EXPERT_NOVICE,S07,Differences in Backcourt Forehand Clear Stroke between Novice and Expert Players,peer_reviewed_direct_clear_IMU,peer_reviewed_direct_clear,mapped
+OVERHEAD_WANG_ARM_TRUNK,S09,Steps for Arm and Trunk Actions of Overhead Forehand Stroke,skill_level_overhead_forehand,skill_level_overhead,mapped
+SMASH_KING_JUMP,,A Correlational Analysis of Shuttlecock Speed Kinematic Determinants in the Badminton Jump Smash,,,none
+SMASH_LI_FOREHAND,S12,Biomechanical Insights for Developing Evidence-Based Training Programs: Overhead Forehand Smash,smash_analogy_kinematic_sequence,smash_analogy,mapped
+SMASH_ZHANG_XFACTOR,S11,The Influence of X-Factor and Experience on the Quality of the Badminton Forehand Smash,smash_analogy_trunk_rotation,smash_analogy,mapped
+SMASH_RUSDIANA_3D,,3D Kinematics Analysis of Overhead Backhand and Forehand Smashes,,,none
+SMASH_CHEN_ACTIVE_PASSIVE,,主動及被動羽球殺球動作之運動學分析,,,none
+SMASH_FOREHAND_BACKHAND_CN,,大專甲組羽球選手正拍與反拍殺球動作之生物力學分析,,,none
+SMASH_HE_FATIGUE,,Impact of Specialized Fatigue and Backhand Smash on Ankle Biomechanics,,,none
+SMASH_XUE_REVIEW_CN,,羽球殺球技術在運動生物力學上之應用,,,none
+OVERHEAD_TSAI_THREE_STROKES,,Biomechanical Analysis of the Upper Extremity in Three Different Badminton Overhead Strokes,,,none
+NET_HSUEH_FOREHAND,,Biomechanical Analysis of Badminton Forehand Net Shots,,,none
+NET_TUMBLE,,Biomechanical Analysis of Badminton Net Shot between Tumble and Without Tumble,,,none
+SERVE_WANG_CN,,羽球正拍與反拍發球之生物力學分析,,,none
+SERVE_LARASATY_IMU,,Kinematic Analysis of Wrist and Elbow Angles in Badminton Serve Techniques Based on IMU Sensors,,,none
+SERVE_BETTERMINTON,,BetterMinton Service: Analyzing the Badminton Service Using Open Kinetic Chain,,,none
+LUNGE_KUNTZE_COMMON,,A Biomechanical Analysis of Common Lunge Tasks in Badminton,,,none
+LUNGE_MEI_RIGHT_FORWARD,,A Biomechanical Investigation of Right-Forward Lunging Step among Badminton Players,,,none
+LUNGE_WANG_SPLIT_STEP,,Biomechanical Effects of the Badminton Split-Step on Forehand and Backhand Lunges,,,none
+LUNGE_XIE_FOREHAND_BACKHAND,,Lower Limb Biomechanical Differences between Forehand and Backhand Lunges,,,none
+LUNGE_CUI_TAKEOFF_LANDING,,Biomechanical Analysis on Skilled Badminton Players during Take-Off and Landing,,,none
+FOOTWORK_LIN_SHOE_CN,,羽球步法以運動生物力學分析作為羽球鞋功能設計之研究,,,none
+FOOTWORK_START_CN,,羽球啟動步法之起跳時機及下肢生物力學分析,,,none

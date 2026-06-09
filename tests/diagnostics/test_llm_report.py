@@ -73,7 +73,8 @@ def test_build_diagnostic_messages_ground_llm_in_diagnosis_and_evidence():
     assert "不要编造" in combined
     assert "BALL_HIGH_NOT_FAR" in combined
     assert "trunk_rotation_peak" in combined
-    assert "CLEAR_ZHAO_LOWER_LIMB" in combined
+    # INTEG-06: the LLM is grounded with [Sxx] citations (legacy CLEAR_ZHAO_LOWER_LIMB -> S06 via crosswalk).
+    assert "S06" in combined
     assert "肌肉激活" in combined
     assert "correction_plan" in combined
     assert "bring_observed_value_inside_template_range" in combined

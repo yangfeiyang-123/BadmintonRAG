@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from rag_project.diagnostics.schemas import DiagnosisReport
+from rag_project.knowledge.concept_kb import evidence_layer_label, load_crosswalk
 from rag_project.knowledge.evidence_index import EvidenceChunk
 
 
@@ -79,9 +80,14 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
 
     lines.extend(["", "## 文献证据", ""])
     if evidence:
+        crosswalk = load_crosswalk()
         for chunk in evidence:
+            # Render [Sxx] citations (concept chunks carry source_ids; legacy chunks
+            # are translated from their string id via the crosswalk) + 中文证据层标签.
+            sids = list(chunk.source_ids) or [crosswalk.to_package(chunk.source_id)]
+            cite = "".join(f"[{sid}]" for sid in sids)
             lines.append(
-                f"- `{chunk.source_id}` | `{chunk.source_class}` | evidence={chunk.evidence_level} | score={chunk.score:.2f}"
+                f"- {cite} | {evidence_layer_label(chunk.evidence_level)} | score={chunk.score:.2f}"
             )
             lines.append(f"  - 标题：{chunk.title}")
             lines.append(f"  - 文件：`{chunk.artifact_path}`")
@@ -94,8 +100,10 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
             "",
             "## 证据边界",
             "",
-            "- 本报告优先使用 `official_manual`、`full_text_html` 和 `full_text_pdf` 来源。",
-            "- 如果证据来自运动学/动力学研究而非 EMG，报告只做机制解释，不把推断写成确定的肌肉激活事实。",
+            "- 证据按层级标注：直接高远球证据 > 头顶多击球 > 杀球/EMG/方法学类比；杀球类比仅作机制参考，不作高远球定量真值。",
+            "- 动作轨迹拟合度高不能证明肌肉激活唯一正确；肌骨模型存在力分配多解，仅做生理合理性验证，不把推断写成确定的肌肉激活事实。",
+            "- 不考虑手和手指发力；肌群层不展开手指外在肌、握拍压力。",
+            "- 上肢远端段（肩内旋/肘伸展/前臂旋前/腕屈）峰值高度重叠，命名顺序≠峰值时序，不给唯一确定先后。",
         ]
     )
 

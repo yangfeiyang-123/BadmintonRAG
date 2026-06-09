@@ -1,0 +1,8 @@
+# Optional dependencies for the hybrid retrieval backend (knowledge/hybrid_retrieval.py)
+# and the concept-KB evaluation (knowledge/evaluate_kb.py). The default keyword/vector
+# backends do NOT need these. bge-m3 (~2.3GB) is downloaded on first dense use; set the
+# cache to the repo with HF cache_folder=.models (handled in code).
+rank-bm25
+PyMuPDF
+sentence-transformers
+jsonschema

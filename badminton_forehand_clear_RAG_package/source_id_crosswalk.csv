@@ -1,0 +1,22 @@
+package_id,legacy_id,match_type,confidence,note
+S01,BWF_COACHES,same_source,high,BWF 教练手册；legacy 为官方教练页/手册同源
+S02,,none,,UGA Pressbooks 正反手高远球教学 OER；rag_project 无对应
+S03,,none,,Sikana 正手头顶高远球教学；rag_project 无对应
+S04,REV_WADDELL_GOWITZKE,exact,high,同一会议论文 cpa/2233（Waddell & Gowitzke 2000）
+S05,CLEAR_SORENSEN,exact,high,同一 PDF projekter.aau.dk/42678547（Sørensen 等 clear strokes）
+S06,CLEAR_ZHAO_LOWER_LIMB,exact,high,同一文 PMC6348812（Zhao & Li 后场高远球下肢）
+S07,CLEAR_HUANG_EXPERT_NOVICE,same_study,high,同一“新手vs经验后场正手高远球”2025 研究；package=BMC/Springer，legacy=PMC12060343 镜像
+S08,,none,,Tsai 2008 三类头顶击球 cpa/1997；legacy 的 OVERHEAD_TSAI_THREE_STROKES 是另一篇(2000 cpa/2521)非同篇
+S09,OVERHEAD_WANG_ARM_TRUNK,exact,high,同一文 PMID19831099（Wang 等头顶正手动作分级）
+S10,REV_PHOMSOUPHA_LAFFAYE,exact,high,同一综述 PMID25549780（Phomsoupha & Laffaye 2015）
+S11,SMASH_ZHANG_XFACTOR,exact,high,同一文 PMC5260572（Zhang 等 X-factor 杀球）
+S12,SMASH_LI_FOREHAND,exact,high,同一文 mdpi 13/22/12488（Li 等杀球运动学序列）
+S13,,none,,Tsai smash/jump EMG cpa/1095；rag_project 无对应
+S14,,none,,Tsai smash/drop EMG isbweb/0439；rag_project 无对应
+S15,,none,,Sakurai & Ohtsuki 2000 杀球 EMG；rag_project 无对应
+S16,,none,,MultiSenseBadminton 数据集；rag_project 无对应
+S17,,none,,Tajik 2025 杀球肌肉协同 EMG+MSK；rag_project 无对应
+S18,,none,,Pardiwala 2020 羽毛球伤病综述；rag_project 无对应
+S19,,none,,Cejudo 2022 青少年肩痛风险；rag_project 无对应
+S20,,none,,Stausholm 2021 丹麦国手肩旋转力量；rag_project 无对应
+S21,,none,,BadmintonGRF 2026 预印本；rag_project 无对应
