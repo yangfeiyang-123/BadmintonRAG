@@ -1,230 +1,701 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BadmintonRAG 动作诊断</title>
+  <title>BadmintonRAG 正手高远球诊断台</title>
   <style>
+    /* ============================================================
+       Design tokens — clinical analytics (teal/slate), light + dark
+       Offline-first: system font stack, zero external dependencies.
+       ============================================================ */
     :root {
-      --bg: #f6f8fb;
-      --panel: #ffffff;
-      --ink: #1f2937;
-      --muted: #667085;
-      --line: #d7dde7;
-      --accent: #0f766e;
-      --accent-2: #b42318;
-      --warn: #b54708;
+      --bg: #eef2f5;
+      --surface: #ffffff;
+      --surface-2: #f6f9fb;
+      --surface-3: #eef3f6;
+      --ink: #10242b;
+      --ink-2: #46585f;
+      --muted: #6a7b82;
+      --line: #dbe3e8;
+      --line-2: #c8d3d9;
+
+      --primary: #0f766e;
+      --primary-2: #0b5d56;
+      --primary-ink: #ffffff;
+      --primary-tint: #e2f1ee;
+      --accent: #0e7490;
+      --ring: rgba(15, 118, 110, .45);
+
+      --danger: #b42318;  --danger-bg: #fdecea;  --danger-line: #f3c4bd;
+      --warn:   #9a5b08;  --warn-bg:   #fbf0df;  --warn-line:   #eecfa0;
+      --info:   #0b6478;  --info-bg:   #e2f1f6;  --info-line:   #bfe0ea;
+      --ok:     #0f766e;  --ok-bg:     #e2f1ee;  --ok-line:     #bcdfd6;
+
+      --shadow-sm: 0 1px 2px rgba(16, 36, 43, .05);
+      --shadow: 0 1px 2px rgba(16, 36, 43, .04), 0 10px 26px -14px rgba(16, 36, 43, .18);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Microsoft YaHei",
+              "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", sans-serif;
+      --mono: "Cascadia Code", "JetBrains Mono", "SF Mono", ui-monospace,
+              Consolas, "Liberation Mono", monospace;
     }
+    html[data-theme="dark"] {
+      --bg: #0b1417;
+      --surface: #111e23;
+      --surface-2: #16262d;
+      --surface-3: #1b2f37;
+      --ink: #e8f0f2;
+      --ink-2: #b2c2c8;
+      --muted: #869aa1;
+      --line: #243a41;
+      --line-2: #2d464e;
+
+      --primary: #14b8a6;
+      --primary-2: #0d9488;
+      --primary-ink: #04211e;
+      --primary-tint: rgba(20, 184, 166, .14);
+      --accent: #22b8cf;
+      --ring: rgba(45, 212, 191, .5);
+
+      --danger: #f1796b;  --danger-bg: rgba(241, 121, 107, .12);  --danger-line: rgba(241, 121, 107, .34);
+      --warn:   #e7a44e;  --warn-bg:   rgba(231, 164, 78, .12);   --warn-line:   rgba(231, 164, 78, .34);
+      --info:   #5cc3dd;  --info-bg:   rgba(92, 195, 221, .12);   --info-line:   rgba(92, 195, 221, .34);
+      --ok:     #34d3b6;  --ok-bg:     rgba(52, 211, 182, .12);   --ok-line:     rgba(52, 211, 182, .32);
+
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 14px 30px -16px rgba(0, 0, 0, .65);
+    }
+
     * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.55;
       color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 100% -10%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 60%),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 18px 24px;
+    h1, h2, h3 { margin: 0; font-weight: 650; letter-spacing: -.01em; }
+    p { margin: 0; }
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+    .mono { font-family: var(--mono); }
+    .muted { color: var(--muted); }
+    .small { font-size: 12.5px; }
+
+    :where(button, summary, a, input, textarea, [tabindex]):focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+    .skip-link {
+      position: fixed; left: 12px; top: -48px; z-index: 1000;
+      background: var(--primary); color: var(--primary-ink);
+      padding: 8px 14px; border-radius: var(--radius-sm);
+      text-decoration: none; transition: top .15s ease;
+    }
+    .skip-link:focus { top: 12px; }
+
+    /* ---------- App bar ---------- */
+    .appbar {
+      position: sticky; top: 0; z-index: 40;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 12px 22px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      backdrop-filter: saturate(1.2) blur(8px);
       border-bottom: 1px solid var(--line);
-      background: #fff;
     }
-    h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0; }
-    main {
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      display: grid; place-items: center;
+      width: 38px; height: 38px; border-radius: 10px;
+      color: var(--primary-ink);
+      background: linear-gradient(150deg, var(--primary), var(--primary-2));
+      box-shadow: var(--shadow-sm);
+      flex: none;
+    }
+    .brand-mark svg { width: 22px; height: 22px; }
+    .brand-text { display: flex; flex-direction: column; min-width: 0; }
+    .brand-title { font-size: 15.5px; font-weight: 680; }
+    .brand-sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .appbar-actions { display: flex; align-items: center; gap: 8px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 30px; padding: 0 11px; border-radius: 999px;
+      font-size: 12px; color: var(--ink-2);
+      background: var(--surface-2); border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex: none; }
+    .pill.ok .dot { background: var(--ok); }
+    .pill.off .dot { background: var(--muted); }
+
+    .icon-btn {
+      display: grid; place-items: center;
+      width: 38px; height: 38px; border-radius: 10px;
+      border: 1px solid var(--line); background: var(--surface);
+      color: var(--ink-2); cursor: pointer;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .icon-btn:hover { background: var(--surface-2); color: var(--ink); border-color: var(--line-2); }
+    .icon-btn svg { width: 19px; height: 19px; }
+
+    /* ---------- Layout ---------- */
+    .layout {
       display: grid;
-      grid-template-columns: minmax(320px, 440px) 1fr;
-      min-height: calc(100vh - 70px);
+      grid-template-columns: minmax(330px, 384px) 1fr;
+      align-items: start;
+      gap: 22px;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 22px;
     }
-    aside {
-      padding: 18px;
-      border-right: 1px solid var(--line);
-      background: #fff;
+    .panel {
+      position: sticky; top: 76px;
+      display: flex; flex-direction: column; gap: 16px;
     }
-    section { padding: 18px 22px; }
-    label { display: block; margin: 0 0 8px; color: var(--muted); font-size: 13px; }
-    textarea {
-      width: 100%;
-      min-height: 520px;
-      resize: vertical;
+    .canvas { min-width: 0; }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 12px;
-      font-family: Consolas, monospace;
-      font-size: 13px;
-      line-height: 1.45;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
     }
-    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 0; }
-    .file-row { margin-top: 12px; display: grid; gap: 8px; }
-    .option-row {
-      margin-top: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .card-pad { padding: 16px; }
+    .card-title {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 12px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase;
       color: var(--muted);
-      font-size: 13px;
+      margin-bottom: 13px;
     }
-    .option-row input { width: 16px; height: 16px; }
-    input[type="file"] {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 8px;
-      background: #fff;
+    .card-title svg { width: 16px; height: 16px; color: var(--primary); }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 40px; padding: 0 15px;
+      border: 1px solid var(--line-2); border-radius: var(--radius-sm);
+      background: var(--surface); color: var(--ink);
+      font: inherit; font-weight: 550; cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, transform .05s ease, box-shadow .15s ease;
     }
-    button, select {
-      min-height: 36px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: #fff;
-      color: var(--ink);
-      padding: 0 12px;
-      font: inherit;
+    .btn svg { width: 17px; height: 17px; flex: none; }
+    .btn:hover { background: var(--surface-2); border-color: var(--line-2); }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary {
+      background: linear-gradient(160deg, var(--primary), var(--primary-2));
+      border-color: transparent; color: var(--primary-ink);
+      box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--primary) 70%, transparent);
     }
-    button.primary {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: #fff;
+    .btn.primary:hover { filter: brightness(1.04); background: linear-gradient(160deg, var(--primary), var(--primary-2)); }
+    .btn.block { width: 100%; }
+    .btn.sm { min-height: 32px; padding: 0 11px; font-size: 12.5px; }
+    .btn.ghost { background: transparent; border-color: var(--line); color: var(--ink-2); }
+    .btn.ghost:hover { background: var(--surface-2); color: var(--ink); }
+    .btn[disabled] { opacity: .55; cursor: not-allowed; pointer-events: none; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+
+    .spinner {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
+      border-top-color: currentColor;
+      animation: spin .7s linear infinite;
     }
-    .status { margin-top: 12px; min-height: 22px; color: var(--muted); font-size: 13px; }
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(130px, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---------- Dropzone ---------- */
+    .dropzone {
+      position: relative; margin-top: 10px;
+      display: flex; align-items: center; gap: 11px;
+      padding: 12px 14px;
+      border: 1.5px dashed var(--line-2); border-radius: var(--radius-sm);
+      background: var(--surface-2); color: var(--ink-2);
+      cursor: pointer; transition: border-color .15s ease, background .15s ease, color .15s ease;
     }
-    .metric, .report {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 14px;
+    .dropzone:hover, .dropzone.drag { border-color: var(--primary); background: var(--primary-tint); color: var(--ink); }
+    .dropzone svg { width: 20px; height: 20px; color: var(--primary); flex: none; }
+    .dropzone-text { display: flex; flex-direction: column; line-height: 1.3; }
+    .dropzone-text b { font-weight: 600; font-size: 13px; }
+    .dropzone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
     }
-    .metric strong { display: block; font-size: 24px; margin-top: 4px; }
-    .report { margin-bottom: 14px; }
-    .report h2 { margin: 0 0 8px; font-size: 18px; }
-    .tag {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #e6f4f1;
-      color: var(--accent);
-      font-size: 12px;
-      margin: 0 6px 6px 0;
+
+    /* ---------- Segmented control ---------- */
+    .field + .field { margin-top: 14px; }
+    .field-label { display: block; font-size: 12.5px; color: var(--ink-2); font-weight: 550; margin-bottom: 7px; }
+    .segmented {
+      display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+      gap: 3px; padding: 3px;
+      background: var(--surface-3); border: 1px solid var(--line); border-radius: 10px;
     }
-    .tag.warn { background: #fff3e8; color: var(--warn); }
-    .tag.danger { background: #fff0ee; color: var(--accent-2); }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      background: #fff;
+    .seg-btn {
+      min-height: 32px; border: 0; border-radius: 7px;
+      background: transparent; color: var(--ink-2);
+      font: inherit; font-size: 13px; font-weight: 550; cursor: pointer;
+      transition: background .15s ease, color .15s ease, box-shadow .15s ease;
     }
-    th, td {
-      border-bottom: 1px solid var(--line);
-      padding: 8px;
-      text-align: left;
-      vertical-align: top;
-      font-size: 13px;
+    .seg-btn:hover { color: var(--ink); }
+    .seg-btn.is-active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
+
+    /* ---------- Switch ---------- */
+    .switch { display: flex; align-items: center; gap: 11px; cursor: pointer; user-select: none; }
+    .switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .switch-track {
+      position: relative; width: 40px; height: 23px; flex: none;
+      background: var(--line-2); border-radius: 999px; transition: background .18s ease;
     }
-    th { color: var(--muted); font-weight: 600; }
-    .range {
-      height: 8px;
-      background: #ecf0f5;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 4px;
+    .switch-thumb {
+      position: absolute; top: 2px; left: 2px; width: 19px; height: 19px;
+      background: #fff; border-radius: 50%; box-shadow: var(--shadow-sm);
+      transition: transform .18s ease;
     }
-    .range span { display: block; height: 100%; background: var(--accent); width: 55%; }
-    .evidence { color: var(--muted); font-size: 13px; }
-    @media (max-width: 900px) {
-      main { grid-template-columns: 1fr; }
-      aside { border-right: 0; border-bottom: 1px solid var(--line); }
-      .summary { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
-      textarea { min-height: 320px; }
+    .switch input:checked + .switch-track { background: var(--primary); }
+    .switch input:checked + .switch-track .switch-thumb { transform: translateX(17px); }
+    .switch input:focus-visible + .switch-track { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .switch-label { font-size: 13px; color: var(--ink); }
+    .switch.disabled { cursor: not-allowed; opacity: .55; }
+
+    .help { margin-top: 9px; font-size: 12px; color: var(--muted); min-height: 16px; line-height: 1.4; }
+    .help code { font-family: var(--mono); font-size: 11.5px; }
+    .status-line {
+      margin-top: 10px; font-size: 12.5px; color: var(--ink-2); min-height: 18px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .status-line svg { width: 15px; height: 15px; flex: none; }
+
+    /* ---------- Advanced (JSON) ---------- */
+    details.advanced { border-top: 1px solid var(--line); padding-top: 13px; margin-top: 2px; }
+    details.advanced > summary {
+      display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none;
+      font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+    }
+    details.advanced > summary::-webkit-details-marker { display: none; }
+    details.advanced > summary .chev { transition: transform .18s ease; color: var(--muted); }
+    details.advanced[open] > summary .chev { transform: rotate(90deg); }
+    textarea#request-json {
+      width: 100%; min-height: 260px; margin-top: 11px; resize: vertical;
+      border: 1px solid var(--line); border-radius: var(--radius-sm);
+      padding: 12px; background: var(--surface-2); color: var(--ink);
+      font-family: var(--mono); font-size: 12.5px; line-height: 1.5;
+      tab-size: 2;
+    }
+    textarea#request-json:focus-visible { outline: 2px solid var(--primary); outline-offset: 0; border-color: var(--primary); }
+
+    .panel-foot { font-size: 11.5px; color: var(--muted); text-align: center; padding-top: 2px; }
+    .panel-foot code { font-family: var(--mono); }
+
+    /* ---------- Canvas: states ---------- */
+    .empty, .error-card {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      gap: 14px; padding: 56px 28px;
+    }
+    .empty .emoji-free-icon, .error-card .emoji-free-icon {
+      display: grid; place-items: center; width: 60px; height: 60px; border-radius: 16px;
+      background: var(--primary-tint); color: var(--primary);
+    }
+    .empty .emoji-free-icon svg, .error-card .emoji-free-icon svg { width: 30px; height: 30px; }
+    .empty h2 { font-size: 18px; }
+    .empty p { color: var(--muted); max-width: 420px; }
+    .error-card { border: 1px solid var(--danger-line); background: var(--danger-bg); border-radius: var(--radius); }
+    .error-card .emoji-free-icon { background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
+    .error-card h2 { font-size: 16px; color: var(--danger); }
+    .error-card p { color: var(--ink-2); word-break: break-word; max-width: 520px; }
+
+    .skeleton { display: flex; flex-direction: column; gap: 16px; }
+    .sk { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+    .sk-row { height: 14px; border-radius: 6px; background:
+      linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%);
+      background-size: 400% 100%; animation: shimmer 1.4s ease infinite; }
+    @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+    /* ---------- Summary KPIs ---------- */
+    .summary-card { margin-bottom: 18px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border-radius: var(--radius); overflow: hidden; }
+    .kpi { background: var(--surface); padding: 15px 16px; }
+    .kpi-label { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .kpi-value { font-size: 25px; font-weight: 680; margin-top: 5px; line-height: 1.1; }
+    .kpi-value.text { font-size: 16px; font-weight: 600; word-break: break-word; }
+    .outcome-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 16px 2px; }
+
+    /* ---------- Badges / chips ---------- */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 600;
+      border: 1px solid transparent; white-space: nowrap;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px; border-radius: 7px; font-size: 12px;
+      background: var(--surface-3); color: var(--ink-2); border: 1px solid var(--line);
+    }
+    .chip.ghost { background: transparent; }
+    .sev-danger { background: var(--danger-bg); color: var(--danger); border-color: var(--danger-line); }
+    .sev-warn   { background: var(--warn-bg);   color: var(--warn);   border-color: var(--warn-line); }
+    .sev-info   { background: var(--info-bg);   color: var(--info);   border-color: var(--info-line); }
+    .sev-ok     { background: var(--ok-bg);     color: var(--ok);     border-color: var(--ok-line); }
+    .sev-text-danger { color: var(--danger); } .sev-text-warn { color: var(--warn); } .sev-text-info { color: var(--info); }
+
+    /* ---------- Report card ---------- */
+    .report { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; }
+    .report-body { padding: 20px 22px; }
+    .rep-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .rep-id { font-size: 17px; font-family: var(--mono); font-weight: 600; }
+    .rep-sub { font-size: 12.5px; margin-top: 2px; }
+    .rep-badges { display: flex; flex-wrap: wrap; gap: 7px; }
+    .rep-diagnosis {
+      margin-top: 14px; padding: 13px 15px;
+      background: var(--surface-2); border: 1px solid var(--line); border-left: 3px solid var(--primary);
+      border-radius: var(--radius-sm); color: var(--ink); font-size: 14.5px;
+    }
+    .rep-actions { display: flex; gap: 8px; margin-top: 13px; flex-wrap: wrap; }
+
+    .rep-section { margin-top: 22px; }
+    .sec-title {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 13px; font-weight: 650; color: var(--ink);
+      padding-bottom: 9px; border-bottom: 1px solid var(--line); margin-bottom: 14px;
+    }
+    .sec-title .count {
+      font-size: 11.5px; font-weight: 650; color: var(--primary);
+      background: var(--primary-tint); border-radius: 999px; padding: 1px 8px;
+    }
+    .sec-title .sec-sub { margin-left: auto; font-size: 11px; font-weight: 500; color: var(--muted); font-family: var(--mono); }
+
+    /* ---------- Deviation cards ---------- */
+    .dev { padding: 14px 15px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); margin-bottom: 11px; }
+    .dev:last-child { margin-bottom: 0; }
+    .dev-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .dev-title { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .dev-signal { font-size: 14px; font-weight: 620; }
+    .dev-meta { font-size: 11.5px; color: var(--muted); font-family: var(--mono); }
+    .dev-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .gauge { position: relative; margin: 26px 2px 6px; }
+    .gauge-track { position: relative; height: 12px; border-radius: 999px; background: var(--surface-3); border: 1px solid var(--line); overflow: visible; }
+    .gauge-band { position: absolute; top: -1px; bottom: -1px; background: var(--ok-bg); border: 1px solid var(--ok-line); border-radius: 999px; }
+    .gauge-mean { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ok); opacity: .6; border-radius: 2px; transform: translateX(-1px); }
+    .gauge-marker { position: absolute; top: -5px; height: 22px; width: 3px; border-radius: 3px; transform: translateX(-1.5px); }
+    .gauge-marker::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 9px; height: 9px; border-radius: 50%; transform: translateX(-50%); background: inherit; box-shadow: 0 0 0 3px var(--surface-2); }
+    .gauge-marker.sev-danger { background: var(--danger); } .gauge-marker.sev-warn { background: var(--warn); } .gauge-marker.sev-info { background: var(--info); }
+    .gauge-value { position: absolute; top: -24px; transform: translateX(-50%); font-size: 12px; font-weight: 650; white-space: nowrap; }
+    .gauge-legend { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 9px; font-size: 12.5px; }
+    .gauge-legend b { font-weight: 650; }
+
+    .spark-wrap { margin-top: 14px; padding-top: 13px; border-top: 1px dashed var(--line); }
+    .spark { width: 100%; height: 52px; display: block; }
+    .spark-eval { fill: none; stroke: var(--primary); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+    .spark-tmpl { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; opacity: .8; vector-effect: non-scaling-stroke; }
+    .spark-impact { stroke: var(--warn); stroke-width: 1.5; stroke-dasharray: 2 3; opacity: .8; vector-effect: non-scaling-stroke; }
+    .spark-peak { fill: var(--primary); stroke: var(--surface); stroke-width: 1.5; }
+    .spark-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 7px; font-size: 11.5px; color: var(--muted); }
+    .spark-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .lg-line { width: 16px; height: 0; border-top: 2px solid var(--primary); }
+    .lg-dash { width: 16px; height: 0; border-top: 1.5px dashed var(--muted); }
+    .lg-impact { width: 14px; height: 0; border-top: 1.5px dashed var(--warn); }
+
+    /* ---------- Plan / links / lists ---------- */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .tile { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); padding: 14px; }
+    .tile-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 9px; }
+    .tile-goal { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+    .tile-body { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+    .tile-foot { font-size: 11.5px; color: var(--muted); margin-top: 9px; font-family: var(--mono); word-break: break-word; }
+    .tile details { margin-top: 9px; }
+    .tile details summary { cursor: pointer; font-size: 11.5px; color: var(--accent); }
+    .tile details code { display: block; margin-top: 6px; font-size: 11px; color: var(--ink-2); background: var(--surface-3); border: 1px solid var(--line); border-radius: 6px; padding: 7px 8px; word-break: break-word; }
+
+    .bullets { margin: 0; padding-left: 2px; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .bullets li { position: relative; padding-left: 20px; font-size: 13.5px; color: var(--ink-2); }
+    .bullets li::before { content: ""; position: absolute; left: 4px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+
+    .ev-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+    .ev-item { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); padding: 11px 13px; }
+    .ev-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .ev-title { margin-top: 5px; font-size: 13px; color: var(--ink); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+      .panel { position: static; }
+      .brand-sub { display: none; }
+    }
+    @media (max-width: 560px) {
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .btn-grid { grid-template-columns: 1fr; }
+      .appbar-actions .pill { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>BadmintonRAG 正手高远球诊断</h1>
-    <div class="evidence">RAG evidence + simulation signal deviation</div>
+  <a class="skip-link" href="#report-output">跳到诊断结果</a>
+
+  <header class="appbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="8.5"></circle>
+          <path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4"></path>
+          <circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-title">BadmintonRAG</span>
+        <span class="brand-sub">正手高远球诊断台 · RAG 证据 + 仿真信号偏差</span>
+      </span>
+    </div>
+    <div class="appbar-actions">
+      <span class="pill" id="llm-pill" title="LLM 报告生成状态"><span class="dot"></span><span id="llm-pill-text">LLM 未配置</span></span>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色 / 浅色主题" title="切换主题"></button>
+    </div>
   </header>
-  <main>
-    <aside>
-      <label for="request-json">诊断请求 JSON</label>
-      <textarea id="request-json" spellcheck="false"></textarea>
-      <div class="toolbar">
-        <select id="backend">
-          <option value="keyword">keyword</option>
-          <option value="vector">vector</option>
-        </select>
-        <button id="load-example">加载示例</button>
-        <button id="load-csv-example">加载CSV示例</button>
-        <button class="primary" id="run-diagnosis">运行诊断</button>
-      </div>
-      <div class="file-row">
-        <label for="csv-file">上传仿真CSV</label>
-        <input id="csv-file" type="file" accept=".csv,text/csv">
-      </div>
-      <label class="option-row">
-        <input id="use-llm" type="checkbox">
-        <span>使用LLM生成报告</span>
-      </label>
-      <div class="status" id="llm-status"></div>
-      <div class="status" id="status"></div>
-    </aside>
-    <section>
-      <div id="report-output">
-        <div class="summary">
-          <div class="metric"><span>样本</span><strong>0</strong></div>
-          <div class="metric"><span>正确模板</span><strong>0</strong></div>
-          <div class="metric"><span>检索后端</span><strong>-</strong></div>
-          <div class="metric"><span>报告</span><strong>等待</strong></div>
+
+  <div class="layout">
+    <!-- ================= Control panel ================= -->
+    <aside class="panel" aria-label="诊断控制面板">
+      <section class="card card-pad">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"/></svg>
+          数据输入
+        </h2>
+        <div class="btn-grid">
+          <button class="btn" id="load-example" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            加载示例
+          </button>
+          <button class="btn" id="load-csv-example" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17v-6m3 6v-3m3 3v-9M5 21h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/></svg>
+            CSV 示例
+          </button>
         </div>
-      </div>
-    </section>
-  </main>
+        <label class="dropzone" id="dropzone" for="csv-file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <span class="dropzone-text"><b>上传仿真 CSV</b><span class="small muted">拖拽或点击选择 · joint_ / muscle_ 列</span></span>
+          <input id="csv-file" type="file" accept=".csv,text/csv">
+        </label>
+        <div class="status-line" id="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card card-pad">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 3.6 14H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 3.6V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 20.4 9H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          诊断设置
+        </h2>
+
+        <div class="field">
+          <span class="field-label">检索后端</span>
+          <div class="segmented" role="radiogroup" aria-label="检索后端" id="backend">
+            <button class="seg-btn is-active" type="button" role="radio" aria-checked="true" data-backend="keyword">关键词</button>
+            <button class="seg-btn" type="button" role="radio" aria-checked="false" data-backend="vector">向量</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="switch" id="llm-switch">
+            <input id="use-llm" type="checkbox">
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+            <span class="switch-label">使用 LLM 生成报告</span>
+          </label>
+          <div class="help" id="llm-status"></div>
+        </div>
+
+        <details class="advanced">
+          <summary>
+            <svg class="chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            高级 · 请求 JSON
+          </summary>
+          <label class="field-label" for="request-json" style="margin-top:11px">直接编辑发送给 <code class="mono">/diagnose/batch</code> 的请求体</label>
+          <textarea id="request-json" spellcheck="false" aria-label="诊断请求 JSON"></textarea>
+        </details>
+      </section>
+
+      <button class="btn primary block" id="run-diagnosis" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l13 8-13 8z"/></svg>
+        运行诊断
+      </button>
+
+      <div class="panel-foot">离线可用 · <code>POST /diagnose/batch</code></div>
+    </aside>
+
+    <!-- ================= Report canvas ================= -->
+    <main class="canvas" id="report-output" tabindex="-1" role="region" aria-label="诊断结果"></main>
+  </div>
+
   <script>
+    // ---------------------------------------------------------------
+    // Element references
+    // ---------------------------------------------------------------
     const requestBox = document.getElementById("request-json");
     const statusEl = document.getElementById("status");
     const output = document.getElementById("report-output");
-    const backend = document.getElementById("backend");
     const csvFile = document.getElementById("csv-file");
+    const dropzone = document.getElementById("dropzone");
     const useLlm = document.getElementById("use-llm");
+    const llmSwitch = document.getElementById("llm-switch");
     const llmStatus = document.getElementById("llm-status");
+    const llmPill = document.getElementById("llm-pill");
+    const llmPillText = document.getElementById("llm-pill-text");
+    const runBtn = document.getElementById("run-diagnosis");
+    const themeToggle = document.getElementById("theme-toggle");
+    const segButtons = Array.from(document.querySelectorAll(".seg-btn"));
 
+    let lastResult = null;     // last API response { summary, reports }
+    let lastDataset = null;    // dataset that produced lastResult (for sparklines)
+    let isRunning = false;
+
+    // ---------------------------------------------------------------
+    // Small utilities
+    // ---------------------------------------------------------------
     function esc(value) {
       return String(value ?? "").replace(/[&<>"']/g, c => ({
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
       })[c]);
     }
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
+    function fmt(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return esc(value);
+      if (Number.isInteger(n)) return String(n);
+      const digits = Math.abs(n) > 0 && Math.abs(n) < 1 ? 3 : 2;
+      return n.toFixed(digits).replace(/\.?0+$/, "");
+    }
+
+    const UNIT = { degree: "°", second: " s", degree_per_second: " °/s", normalized_activation: "" };
+    const unitOf = u => (UNIT[u] !== undefined ? UNIT[u] : (u ? " " + u : ""));
+
+    const SEV = {
+      high: { label: "高", cls: "danger" },
+      medium: { label: "中", cls: "warn" },
+      low: { label: "低", cls: "info" }
+    };
+    const sevOf = s => SEV[s] || { label: esc(s || "—"), cls: "info" };
+
+    const DIR = {
+      below_template: { label: "低于模板", arrow: "↓" },
+      above_template: { label: "高于模板", arrow: "↑" },
+      within_template: { label: "模板范围内", arrow: "→" }
+    };
+    const PHASE = { backswing: "引拍", acceleration: "加速", impact_window: "击球窗口", follow_through: "随挥", all: "全程" };
+    const GROUP = { joint_angle: "关节角度", muscle_activation: "肌肉激活", unknown: "其它" };
+    const SIGNAL = {
+      trunk_rotation: "躯干旋转", shoulder_internal_rotation: "肩内旋", elbow_flexion: "肘屈曲",
+      wrist_extension: "腕伸展", forearm_pronation: "前臂旋前",
+      external_oblique: "腹外斜肌", anterior_deltoid: "三角肌前束",
+      triceps_brachii: "肱三头肌", forearm_pronator_group: "前臂旋前肌群"
+    };
+    const OUTCOME = {
+      ball_high_not_far: { label: "球高不远", cls: "warn" },
+      low_speed: { label: "球速偏低", cls: "danger" },
+      uncoordinated_power: { label: "发力不协调", cls: "warn" }
+    };
+    const CONF = { high: { label: "高", cls: "ok" }, medium: { label: "中", cls: "info" }, low: { label: "低", cls: "warn" } };
+
+    const phaseOf = p => PHASE[p] || esc(p || "—");
+    const groupOf = g => GROUP[g] || esc(g || "—");
+    const signalOf = s => SIGNAL[s] || esc(s || "—");
+
+    function getBackend() {
+      const active = segButtons.find(b => b.classList.contains("is-active"));
+      return active ? active.dataset.backend : "keyword";
+    }
+
+    // ---------------------------------------------------------------
+    // Theme
+    // ---------------------------------------------------------------
+    const ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+    const ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      themeToggle.innerHTML = theme === "dark" ? ICON_SUN : ICON_MOON;
+      try { localStorage.setItem("brag-theme", theme); } catch (_) {}
+    }
+    function initTheme() {
+      let theme;
+      try { theme = localStorage.getItem("brag-theme"); } catch (_) {}
+      if (!theme) theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      applyTheme(theme);
+    }
+    themeToggle.addEventListener("click", () => {
+      applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    });
+
+    // ---------------------------------------------------------------
+    // Status helpers
+    // ---------------------------------------------------------------
+    const ICON_INFO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-linecap="round"/></svg>';
+    const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    function setStatus(text, kind) {
+      const color = kind === "ok" ? "var(--ok)" : kind === "error" ? "var(--danger)" : "var(--muted)";
+      const icon = kind === "ok" ? ICON_CHECK : ICON_INFO;
+      statusEl.innerHTML = text ? `<span style="color:${color}">${icon}</span><span>${esc(text)}</span>` : "";
+    }
+
+    // ---------------------------------------------------------------
+    // Request JSON loading / sync
+    // ---------------------------------------------------------------
     async function loadExample() {
-      statusEl.textContent = "Loading example request...";
-      const response = await fetch("/examples/api_batch_request.json");
-      const payload = await response.json();
-      payload.retrieval_backend = backend.value;
-      payload.llm = useLlm.checked;
-      requestBox.value = JSON.stringify(payload, null, 2);
-      statusEl.textContent = "Example loaded.";
+      setStatus("正在加载示例请求…");
+      try {
+        const response = await fetch("/examples/api_batch_request.json");
+        const payload = await response.json();
+        payload.retrieval_backend = getBackend();
+        payload.llm = useLlm.checked;
+        requestBox.value = JSON.stringify(payload, null, 2);
+        const ds = payload.dataset || {};
+        setStatus(`已加载示例：${(ds.correct_samples || []).length} 正确模板 · ${(ds.eval_samples || []).length} 待评估`, "ok");
+      } catch (error) {
+        setStatus(`加载示例失败：${error.message}`, "error");
+      }
     }
 
     async function loadConfig() {
       try {
         const response = await fetch("/config");
         const config = await response.json();
-        useLlm.disabled = !config.llm.configured;
-        useLlm.checked = false;
-        llmStatus.textContent = config.llm.configured
-          ? `LLM configured: ${config.llm.model}`
-          : "LLM not configured. Set BADMINTON_LLM_BASE_URL and BADMINTON_LLM_MODEL.";
+        const ok = !!(config.llm && config.llm.configured);
+        useLlm.disabled = !ok;
+        llmSwitch.classList.toggle("disabled", !ok);
+        if (!ok) useLlm.checked = false;
+        llmStatus.textContent = ok
+          ? `已配置 LLM：${config.llm.model}`
+          : "未配置 LLM。设置 BADMINTON_LLM_BASE_URL 与 BADMINTON_LLM_MODEL 后可启用。";
+        llmPill.className = "pill " + (ok ? "ok" : "off");
+        llmPillText.textContent = ok ? "LLM 就绪" : "LLM 未配置";
       } catch (error) {
         useLlm.disabled = true;
-        llmStatus.textContent = `LLM config unavailable: ${error.message}`;
+        llmSwitch.classList.add("disabled");
+        llmStatus.textContent = `LLM 配置不可用：${error.message}`;
+        llmPill.className = "pill off";
+        llmPillText.textContent = "LLM 不可用";
       }
     }
 
+    function syncRequestField() {
+      try {
+        const payload = JSON.parse(requestBox.value || "{}");
+        payload.retrieval_backend = getBackend();
+        payload.llm = useLlm.checked;
+        requestBox.value = JSON.stringify(payload, null, 2);
+      } catch (_) { /* leave invalid JSON untouched */ }
+    }
+
+    // ---------------------------------------------------------------
+    // CSV parsing -> dataset payload
+    // ---------------------------------------------------------------
     function parseCsv(text) {
       const rows = [];
       let row = [], value = "", quoted = false;
@@ -287,7 +758,7 @@
         if (first.split === "eval") evalSamples.push(sample);
       }
       return {
-        retrieval_backend: backend.value,
+        retrieval_backend: getBackend(),
         llm: useLlm.checked,
         dataset: {
           dataset_id: datasetId,
@@ -302,125 +773,426 @@
       const rows = parseCsv(text);
       const payload = csvRowsToDataset(rows, datasetId);
       requestBox.value = JSON.stringify(payload, null, 2);
-      statusEl.textContent = `CSV loaded: ${payload.dataset.correct_samples.length} correct, ${payload.dataset.eval_samples.length} eval.`;
+      setStatus(`CSV 已加载：${payload.dataset.correct_samples.length} 正确模板 · ${payload.dataset.eval_samples.length} 待评估`, "ok");
     }
 
     async function loadCsvExample() {
-      statusEl.textContent = "Loading CSV example...";
-      const response = await fetch("/examples/forehand_clear_simulation.csv");
-      const csvText = await response.text();
-      loadCsvText(csvText, "forehand_clear_simulation");
-    }
-
-    function renderSummary(summary) {
-      return `<div class="summary">
-        <div class="metric"><span>样本</span><strong>${esc(summary.evaluated_samples)}</strong></div>
-        <div class="metric"><span>正确模板</span><strong>${esc(summary.correct_samples)}</strong></div>
-        <div class="metric"><span>检索后端</span><strong>${esc(summary.retrieval_backend)}</strong></div>
-        <div class="metric"><span>数据集</span><strong>${esc(summary.dataset_id)}</strong></div>
-      </div>`;
-    }
-
-    function renderDeviations(report) {
-      const rows = (report.key_deviations || []).map(d => `
-        <tr>
-          <td>${esc(d.feature_group)}/${esc(d.signal_name)}</td>
-          <td>${esc(d.phase)}</td>
-          <td><span class="tag ${d.severity === "high" ? "danger" : "warn"}">${esc(d.severity)}</span>${esc(d.direction)}</td>
-          <td>${esc(d.observed_value)} ${esc(d.unit)}</td>
-          <td>${esc(d.template_lower_bound)}-${esc(d.template_upper_bound)} ${esc(d.unit)}<div class="range"><span></span></div></td>
-        </tr>`).join("");
-      return `<table><thead><tr><th>错误信号</th><th>阶段</th><th>偏差</th><th>观测值</th><th>正确模板范围</th></tr></thead><tbody>${rows}</tbody></table>`;
-    }
-
-    function renderPlan(report) {
-      return (report.correction_plan || []).map(action => `
-        <div class="metric">
-          <span class="tag">${esc(action.feature_group)}/${esc(action.target_signal)}</span>
-          <strong style="font-size:15px">${esc(action.goal)}</strong>
-          <p>${esc(action.drill)}</p>
-          <div class="evidence">验证指标：${esc(action.validation_metric)}</div>
-        </div>`).join("");
-    }
-
-    function renderExplanationLinks(report) {
-      return (report.explanation_links || []).map(link => `
-        <div class="metric">
-          <span class="tag">${esc(link.feature_group)}/${esc(link.signal_name)}</span>
-          <strong style="font-size:15px">${esc(link.feature)} -> ${esc(link.outcome_label)}</strong>
-          <p>${esc(link.rationale)}</p>
-          <div class="evidence">mechanism=${esc(link.mechanism)}</div>
-          <div class="evidence">correction_focus=${esc(link.correction_focus)}</div>
-          <div class="evidence">evidence_query=${esc(link.evidence_query)}</div>
-        </div>`).join("");
-    }
-
-    function renderEvidence(report) {
-      return (report.evidence || []).map(e => `
-        <li><code>${esc(e.source_id)}</code> ${esc(e.evidence_level)} - ${esc(e.title)}</li>`).join("");
-    }
-
-    function renderResult(data) {
-      const reports = (data.reports || []).map(report => `
-        <article class="report">
-          <h2>${esc(report.sample_id)}</h2>
-          <span class="tag danger">${esc(report.outcome_label)}</span>
-          <span class="tag">${esc(report.retrieval_backend)}</span>
-          <p>${esc(report.primary_diagnosis)}</p>
-          ${renderDeviations(report)}
-          <h3>结构化改进计划</h3>
-          <div class="summary">${renderPlan(report)}</div>
-          <h3>Outcome-Deviation Explanation Links</h3>
-          <div class="summary">${renderExplanationLinks(report)}</div>
-          <h3>文献证据</h3>
-          <ul class="evidence">${renderEvidence(report)}</ul>
-        </article>`).join("");
-      output.innerHTML = renderSummary(data.summary) + reports;
-    }
-
-    async function runDiagnosis() {
+      setStatus("正在加载 CSV 示例…");
       try {
-        const payload = JSON.parse(requestBox.value);
-        payload.retrieval_backend = backend.value;
-        payload.llm = useLlm.checked;
-        statusEl.textContent = "Running diagnosis...";
-        const response = await fetch("/diagnose/batch", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || data.error || "request failed");
-        renderResult(data);
-        statusEl.textContent = "Diagnosis complete.";
+        const response = await fetch("/examples/forehand_clear_simulation.csv");
+        const csvText = await response.text();
+        loadCsvText(csvText, "forehand_clear_simulation");
       } catch (error) {
-        statusEl.textContent = `Error: ${error.message}`;
+        setStatus(`加载 CSV 示例失败：${error.message}`, "error");
       }
     }
 
+    // ---------------------------------------------------------------
+    // Rendering: states
+    // ---------------------------------------------------------------
+    function renderEmpty() {
+      output.innerHTML = `
+        <div class="card empty">
+          <div class="emoji-free-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 2 4-5"/></svg>
+          </div>
+          <h2>尚未运行诊断</h2>
+          <p>加载示例数据或上传仿真 CSV，然后点击「运行诊断」。结果会显示偏差刻度、信号时序、改进计划与文献证据。</p>
+          <button class="btn primary" data-action="example-run" type="button">加载示例并运行</button>
+        </div>`;
+    }
+
+    function renderLoading() {
+      const block = `<div class="sk">
+        <div class="sk-row" style="width:40%;height:18px"></div>
+        <div class="sk-row" style="width:100%;margin-top:14px;height:60px"></div>
+        <div class="sk-row" style="width:90%;margin-top:10px"></div>
+        <div class="sk-row" style="width:70%;margin-top:10px"></div>
+      </div>`;
+      output.innerHTML = `<div class="skeleton">${block}${block}</div>`;
+    }
+
+    function renderError(message) {
+      output.innerHTML = `
+        <div class="error-card" role="alert">
+          <div class="emoji-free-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.6 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </div>
+          <h2>诊断失败</h2>
+          <p>${esc(message)}</p>
+          <button class="btn" data-action="rerun" type="button">重试</button>
+        </div>`;
+    }
+
+    // ---------------------------------------------------------------
+    // Rendering: summary + reports
+    // ---------------------------------------------------------------
+    function renderSummary(summary) {
+      const counts = summary.outcome_counts || {};
+      const chips = Object.keys(counts).map(key => {
+        const o = OUTCOME[key] || { label: key, cls: "info" };
+        return `<span class="badge sev-${o.cls}">${esc(o.label)}<span class="num">×${esc(counts[key])}</span></span>`;
+      }).join("");
+      return `
+        <section class="card summary-card" aria-label="诊断概要">
+          <div class="kpis">
+            <div class="kpi"><div class="kpi-label">评估样本</div><div class="kpi-value num">${esc(summary.evaluated_samples)}</div></div>
+            <div class="kpi"><div class="kpi-label">正确模板</div><div class="kpi-value num">${esc(summary.correct_samples)}</div></div>
+            <div class="kpi"><div class="kpi-label">检索后端</div><div class="kpi-value text">${esc(summary.retrieval_backend)}</div></div>
+            <div class="kpi"><div class="kpi-label">数据集</div><div class="kpi-value text mono">${esc(summary.dataset_id)}</div></div>
+          </div>
+          ${chips ? `<div class="outcome-chips">${chips}</div>` : ""}
+        </section>`;
+    }
+
+    function buildSeries(report, deviation) {
+      if (!lastDataset) return null;
+      const evalSample = (lastDataset.eval_samples || []).find(s => s.sample_id === report.sample_id);
+      if (!evalSample) return null;
+      const groupKey = /muscle/.test(deviation.feature_group) ? "muscle_activation" : "joint_angles";
+      const raw = evalSample[groupKey] && evalSample[groupKey][deviation.signal_name];
+      if (!Array.isArray(raw) || raw.length < 2) return null;
+      const evalSeries = raw.map(Number);
+      const n = evalSeries.length;
+
+      const correct = (lastDataset.correct_samples || [])
+        .map(s => s[groupKey] && s[groupKey][deviation.signal_name])
+        .filter(a => Array.isArray(a) && a.length === n);
+      let tmpl = null;
+      if (correct.length) tmpl = evalSeries.map((_, i) => correct.reduce((sum, a) => sum + Number(a[i]), 0) / correct.length);
+
+      const time = Array.isArray(evalSample.time) ? evalSample.time : [];
+      let impactIdx = NaN;
+      const impact = evalSample.events ? Number(evalSample.events.impact) : NaN;
+      if (Number.isFinite(impact) && time.length) {
+        let best = 0, bd = Infinity;
+        time.forEach((t, i) => { const d = Math.abs(Number(t) - impact); if (d < bd) { bd = d; best = i; } });
+        impactIdx = best;
+      }
+      let peakIdx = 0, pv = -Infinity;
+      evalSeries.forEach((v, i) => { if (v > pv) { pv = v; peakIdx = i; } });
+      return { evalSeries, tmpl, impactIdx, peakIdx };
+    }
+
+    function renderSparkline(series) {
+      const { evalSeries, tmpl, impactIdx, peakIdx } = series;
+      const n = evalSeries.length;
+      const W = 260, H = 52, padX = 4, padY = 8;
+      const all = evalSeries.concat(tmpl || []);
+      let mn = Math.min(...all), mx = Math.max(...all);
+      if (mx === mn) { mx = mn + 1; mn = mn - 1; }
+      const X = i => padX + (i / (n - 1)) * (W - 2 * padX);
+      const Y = v => H - padY - ((v - mn) / (mx - mn)) * (H - 2 * padY);
+      const path = s => s.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" ");
+      const tmplPath = (tmpl && tmpl.length === n) ? `<path d="${path(tmpl)}" class="spark-tmpl"/>` : "";
+      const impactLine = Number.isFinite(impactIdx)
+        ? `<line x1="${X(impactIdx).toFixed(1)}" y1="${padY - 2}" x2="${X(impactIdx).toFixed(1)}" y2="${H - padY + 2}" class="spark-impact"/>` : "";
+      const peakDot = Number.isFinite(peakIdx)
+        ? `<circle cx="${X(peakIdx).toFixed(1)}" cy="${Y(evalSeries[peakIdx]).toFixed(1)}" r="2.6" class="spark-peak"/>` : "";
+      return `
+        <div class="spark-wrap">
+          <svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="信号时序：实线为本次动作，虚线为正确模板均值">${impactLine}${tmplPath}<path d="${path(evalSeries)}" class="spark-eval"/>${peakDot}</svg>
+          <div class="spark-legend">
+            <span><i class="lg-line"></i>本次动作</span>
+            ${tmpl ? '<span><i class="lg-dash"></i>正确模板均值</span>' : ""}
+            ${Number.isFinite(impactIdx) ? '<span><i class="lg-impact"></i>击球时刻</span>' : ""}
+          </div>
+        </div>`;
+    }
+
+    function renderGauge(d) {
+      const lower = Number(d.template_lower_bound);
+      const upper = Number(d.template_upper_bound);
+      const obs = Number(d.observed_value);
+      const mean = Number(d.template_value);
+      const vals = [lower, upper, obs, mean].filter(Number.isFinite);
+      let lo = Math.min(...vals), hi = Math.max(...vals);
+      if (hi === lo) { hi = lo + 1; lo = lo - 1; }
+      const pad = (hi - lo) * 0.18;
+      const dMin = lo - pad, dMax = hi + pad;
+      const pos = x => ((x - dMin) / (dMax - dMin)) * 100;
+      const bandL = pos(Math.min(lower, upper));
+      const bandR = pos(Math.max(lower, upper));
+      const markL = pos(obs);
+      const sev = sevOf(d.severity);
+      const u = unitOf(d.unit);
+      return `
+        <div class="gauge" role="img" aria-label="观测值 ${esc(fmt(obs))}${esc(u)}，正确模板范围 ${esc(fmt(lower))} 至 ${esc(fmt(upper))}${esc(u)}">
+          <div class="gauge-value sev-text-${sev.cls} num" style="left:${clamp(markL, 6, 94)}%">${esc(fmt(obs))}${esc(u)}</div>
+          <div class="gauge-track">
+            <div class="gauge-band" style="left:${clamp(bandL, 0, 100)}%;width:${clamp(bandR - bandL, 1.5, 100)}%"></div>
+            ${Number.isFinite(mean) ? `<div class="gauge-mean" style="left:${clamp(pos(mean), 0, 100)}%"></div>` : ""}
+            <div class="gauge-marker sev-${sev.cls}" style="left:${clamp(markL, 0, 100)}%"></div>
+          </div>
+          <div class="gauge-legend">
+            <span class="num">观测 <b class="sev-text-${sev.cls}">${esc(fmt(obs))}${esc(u)}</b></span>
+            <span class="muted num">模板 ${esc(fmt(lower))}–${esc(fmt(upper))}${esc(u)}（均值 ${esc(fmt(mean))}${esc(u)}）</span>
+          </div>
+        </div>`;
+    }
+
+    function renderDeviation(report, d) {
+      const sev = sevOf(d.severity);
+      const dir = DIR[d.direction] || { label: esc(d.direction || ""), arrow: "" };
+      const series = buildSeries(report, d);
+      return `
+        <div class="dev">
+          <div class="dev-head">
+            <div class="dev-title">
+              <span class="dev-signal">${signalOf(d.signal_name)}</span>
+              <span class="dev-meta" title="${esc(d.feature)}">${groupOf(d.feature_group)} · ${phaseOf(d.phase)} · ${esc(d.signal_name)}</span>
+            </div>
+            <div class="dev-badges">
+              <span class="badge sev-${sev.cls}">${sev.label}偏差</span>
+              <span class="chip ghost">${dir.label} ${dir.arrow}</span>
+            </div>
+          </div>
+          ${renderGauge(d)}
+          ${series ? renderSparkline(series) : ""}
+        </div>`;
+    }
+
+    function renderPlan(report) {
+      return (report.correction_plan || []).map(a => {
+        const sev = sevOf(a.severity);
+        return `
+          <div class="tile">
+            <div class="tile-top">
+              <span class="badge sev-${sev.cls}">${sev.label}</span>
+              <span class="chip mono">${groupOf(a.feature_group)}/${signalOf(a.target_signal)}</span>
+            </div>
+            <div class="tile-goal">${esc(a.goal)}</div>
+            <div class="tile-body">${esc(a.drill)}</div>
+            <div class="tile-foot">验证：${esc(a.validation_metric)}</div>
+          </div>`;
+      }).join("");
+    }
+
+    function renderExplanationLinks(report) {
+      return (report.explanation_links || []).map(link => {
+        const sev = sevOf(link.severity);
+        return `
+          <div class="tile">
+            <div class="tile-top">
+              <span class="chip mono">${groupOf(link.feature_group)}/${signalOf(link.signal_name)}</span>
+              <span class="badge sev-${sev.cls}">${sev.label}</span>
+            </div>
+            <div class="tile-goal">${signalOf(link.signal_name)} → ${esc(OUTCOME[link.outcome_label] ? OUTCOME[link.outcome_label].label : link.outcome_label)}</div>
+            <div class="tile-body">${esc(link.rationale)}</div>
+            <div class="tile-foot">机制：${esc(link.mechanism)}</div>
+            <div class="tile-foot">纠正重点：${esc(link.correction_focus)}</div>
+            <details><summary>证据检索词</summary><code>${esc(link.evidence_query)}</code></details>
+          </div>`;
+      }).join("");
+    }
+
+    function renderBullets(items) {
+      return `<ul class="bullets">${(items || []).map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
+    }
+
+    function renderEvidence(report) {
+      return `<ul class="ev-list">${(report.evidence || []).map(e => `
+        <li class="ev-item">
+          <div class="ev-top">
+            <code class="mono">${esc(e.source_id)}</code>
+            <span class="chip">${esc(e.evidence_level)}</span>
+            ${Number.isFinite(Number(e.score)) ? `<span class="chip ghost num">score ${esc(fmt(e.score))}</span>` : ""}
+          </div>
+          <div class="ev-title">${esc(e.title)}</div>
+        </li>`).join("")}</ul>`;
+    }
+
+    function section(title, bodyHtml, count, subtitle) {
+      if (!bodyHtml) return "";
+      return `<section class="rep-section">
+        <h3 class="sec-title">${title}${count != null ? `<span class="count num">${count}</span>` : ""}${subtitle ? `<span class="sec-sub">${subtitle}</span>` : ""}</h3>
+        ${bodyHtml}
+      </section>`;
+    }
+
+    function renderReport(report) {
+      const outcome = OUTCOME[report.outcome_label] || { label: report.outcome_label, cls: "info" };
+      const conf = CONF[report.diagnostic_confidence] || { label: report.diagnostic_confidence || "—", cls: "info" };
+      const devs = report.key_deviations || [];
+
+      const deviationsBody = devs.length
+        ? devs.map(d => renderDeviation(report, d)).join("")
+        : `<p class="muted">未检测到与该后果标签直接相关的模板外偏差。</p>`;
+
+      return `
+        <article class="report">
+          <div class="report-body">
+            <div class="rep-head">
+              <div>
+                <h2 class="rep-id">${esc(report.sample_id)}</h2>
+                <div class="rep-sub muted">正手高远球 · ${esc(report.action_type)}</div>
+              </div>
+              <div class="rep-badges">
+                <span class="badge sev-${outcome.cls}">${esc(outcome.label)}</span>
+                <span class="badge sev-${conf.cls}">置信度 ${esc(conf.label)}</span>
+                <span class="chip ghost">${esc(report.retrieval_backend)}</span>
+              </div>
+            </div>
+            <p class="rep-diagnosis">${esc(report.primary_diagnosis)}</p>
+            <div class="rep-actions">
+              <button class="btn ghost sm" data-action="download-md" data-id="${esc(report.sample_id)}" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+                下载报告 (.md)
+              </button>
+              <button class="btn ghost sm" data-action="copy-json" data-id="${esc(report.sample_id)}" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                复制 JSON
+              </button>
+            </div>
+
+            ${section("关键偏差", deviationsBody, devs.length || null)}
+            ${section("可能机制", renderBullets(report.likely_mechanisms), (report.likely_mechanisms || []).length || null)}
+            ${section("改进建议", renderBullets(report.correction_suggestions), (report.correction_suggestions || []).length || null)}
+            ${section("结构化改进计划", (report.correction_plan || []).length ? `<div class="cards-grid">${renderPlan(report)}</div>` : "", (report.correction_plan || []).length || null)}
+            ${section("结果-偏差解释链", (report.explanation_links || []).length ? `<div class="cards-grid">${renderExplanationLinks(report)}</div>` : "", (report.explanation_links || []).length || null, "Outcome-Deviation Explanation Links")}
+            ${section("文献证据", (report.evidence || []).length ? renderEvidence(report) : `<p class="muted">当前 evidence index 未检索到可用证据。</p>`, (report.evidence || []).length || null)}
+          </div>
+        </article>`;
+    }
+
+    function renderResult(data) {
+      lastResult = data;
+      const reports = (data.reports || []).map(renderReport).join("");
+      output.innerHTML = renderSummary(data.summary || {}) + (reports || `<div class="card empty"><p class="muted">本次诊断没有生成报告。</p></div>`);
+    }
+
+    // ---------------------------------------------------------------
+    // Run diagnosis
+    // ---------------------------------------------------------------
+    function setRunning(running) {
+      isRunning = running;
+      runBtn.disabled = running;
+      runBtn.innerHTML = running
+        ? '<span class="spinner" aria-hidden="true"></span> 诊断中…'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l13 8-13 8z"/></svg> 运行诊断';
+    }
+
+    async function runDiagnosis() {
+      if (isRunning) return;
+      let payload;
+      try {
+        payload = JSON.parse(requestBox.value);
+      } catch (error) {
+        setStatus(`请求 JSON 解析失败：${error.message}`, "error");
+        renderError(`请求 JSON 无法解析：${error.message}`);
+        return;
+      }
+      payload.retrieval_backend = getBackend();
+      payload.llm = useLlm.checked;
+      requestBox.value = JSON.stringify(payload, null, 2);
+
+      setRunning(true);
+      setStatus("正在运行诊断…");
+      renderLoading();
+      try {
+        const response = await fetch("/diagnose/batch", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || data.error || "请求失败");
+        lastDataset = payload.dataset || null;
+        renderResult(data);
+        const count = (data.reports || []).length;
+        setStatus(`诊断完成：生成 ${count} 份报告`, "ok");
+        output.focus({ preventScroll: true });
+      } catch (error) {
+        setStatus(`诊断失败：${error.message}`, "error");
+        renderError(error.message);
+      } finally {
+        setRunning(false);
+      }
+    }
+
+    // ---------------------------------------------------------------
+    // Per-report actions
+    // ---------------------------------------------------------------
+    function findReport(id) {
+      return (lastResult && lastResult.reports || []).find(r => r.sample_id === id) || null;
+    }
+    function downloadMarkdown(id) {
+      const report = findReport(id);
+      if (!report) return;
+      const md = report.markdown || ("# " + id + "\n\n(本次响应未包含 Markdown 报告)\n");
+      const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${id}.md`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setStatus(`已下载报告 ${id}.md`, "ok");
+    }
+    async function copyJson(id) {
+      const report = findReport(id);
+      if (!report) return;
+      const clone = Object.assign({}, report);
+      delete clone.markdown;
+      const text = JSON.stringify(clone, null, 2);
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus(`已复制 ${id} 的 JSON`, "ok");
+      } catch (_) {
+        const ta = document.createElement("textarea");
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); setStatus(`已复制 ${id} 的 JSON`, "ok"); }
+        catch (e) { setStatus(`复制失败：${e.message}`, "error"); }
+        ta.remove();
+      }
+    }
+
+    // ---------------------------------------------------------------
+    // Event wiring
+    // ---------------------------------------------------------------
     document.getElementById("load-example").addEventListener("click", loadExample);
     document.getElementById("load-csv-example").addEventListener("click", loadCsvExample);
-    document.getElementById("run-diagnosis").addEventListener("click", runDiagnosis);
+    runBtn.addEventListener("click", runDiagnosis);
+
     csvFile.addEventListener("change", async () => {
       const file = csvFile.files && csvFile.files[0];
       if (!file) return;
       loadCsvText(await file.text(), file.name.replace(/\.[^.]+$/, ""));
     });
-    backend.addEventListener("change", () => {
-      try {
-        const payload = JSON.parse(requestBox.value || "{}");
-        payload.retrieval_backend = backend.value;
-        payload.llm = useLlm.checked;
-        requestBox.value = JSON.stringify(payload, null, 2);
-      } catch (_) {}
+
+    ["dragenter", "dragover"].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add("drag"); }));
+    ["dragleave", "drop"].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove("drag"); }));
+    dropzone.addEventListener("drop", async e => {
+      const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file) loadCsvText(await file.text(), file.name.replace(/\.[^.]+$/, ""));
     });
-    useLlm.addEventListener("change", () => {
-      try {
-        const payload = JSON.parse(requestBox.value || "{}");
-        payload.llm = useLlm.checked;
-        requestBox.value = JSON.stringify(payload, null, 2);
-      } catch (_) {}
+
+    segButtons.forEach(btn => btn.addEventListener("click", () => {
+      segButtons.forEach(b => { b.classList.remove("is-active"); b.setAttribute("aria-checked", "false"); });
+      btn.classList.add("is-active");
+      btn.setAttribute("aria-checked", "true");
+      syncRequestField();
+    }));
+
+    useLlm.addEventListener("change", syncRequestField);
+
+    output.addEventListener("click", e => {
+      const target = e.target.closest("[data-action]");
+      if (!target) return;
+      const action = target.dataset.action;
+      if (action === "download-md") downloadMarkdown(target.dataset.id);
+      else if (action === "copy-json") copyJson(target.dataset.id);
+      else if (action === "rerun") runDiagnosis();
+      else if (action === "example-run") { loadExample().then(runDiagnosis); }
     });
+
+    // ---------------------------------------------------------------
+    // Boot
+    // ---------------------------------------------------------------
+    initTheme();
+    renderEmpty();
     loadConfig();
     loadExample();
   </script>

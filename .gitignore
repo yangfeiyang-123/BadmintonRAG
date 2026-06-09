@@ -9,3 +9,10 @@ rag_project/sources/processed/text/
 rag_project/sources/processed/vector/
 rag_project/sources/raw/pdf/
 rag_project/sources/raw/html/
+
+# Local launch scripts / env files that may hold secrets (never commit)
+*.local.ps1
+.env
+.env.*
+secrets.*
+.omc/

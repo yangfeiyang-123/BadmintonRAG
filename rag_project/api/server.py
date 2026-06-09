@@ -121,6 +121,8 @@ def create_handler():
                 _json_response(self, 400, {"error": "invalid_json", "message": str(exc)})
             except (KeyError, TypeError, ValueError) as exc:
                 _json_response(self, 400, {"error": "bad_request", "message": str(exc)})
+            except Exception as exc:  # noqa: BLE001 - surface upstream/LLM/network failures as JSON, not a dropped connection
+                _json_response(self, 502, {"error": "diagnosis_failed", "message": str(exc)})
 
     return BadmintonRAGHandler
 
