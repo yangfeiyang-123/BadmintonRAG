@@ -423,6 +423,32 @@
     .ev-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .ev-title { margin-top: 5px; font-size: 13px; color: var(--ink); }
 
+    /* ---------- AI markdown report ---------- */
+    .ai-report { margin-top: 14px; border: 1px solid var(--info-line); background: var(--info-bg); border-radius: var(--radius-sm); overflow: hidden; }
+    .ai-report > summary {
+      display: flex; align-items: center; gap: 9px; cursor: pointer; list-style: none;
+      padding: 12px 15px; font-size: 13px; font-weight: 650; color: var(--info);
+    }
+    .ai-report > summary::-webkit-details-marker { display: none; }
+    .ai-report > summary svg { width: 17px; height: 17px; flex: none; }
+    .ai-report > summary .chev { margin-left: auto; transition: transform .18s ease; }
+    .ai-report[open] > summary .chev { transform: rotate(90deg); }
+    .md-body { padding: 4px 18px 18px; color: var(--ink); font-size: 13.5px; line-height: 1.65; }
+    .md-body h1, .md-body h2, .md-body h3 { color: var(--ink); margin: 16px 0 8px; line-height: 1.3; }
+    .md-body h1 { font-size: 18px; } .md-body h2 { font-size: 16px; } .md-body h3 { font-size: 14px; }
+    .md-body h1:first-child, .md-body h2:first-child { margin-top: 4px; }
+    .md-body p { margin: 8px 0; }
+    .md-body ul, .md-body ol { margin: 8px 0; padding-left: 22px; }
+    .md-body li { margin: 4px 0; }
+    .md-body strong { font-weight: 650; }
+    .md-body code { font-family: var(--mono); font-size: 12px; background: var(--surface-3); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+    .md-body hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+    .md-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12.5px; }
+    .md-body th, .md-body td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+    .md-body th { background: var(--surface-3); font-weight: 650; color: var(--ink-2); }
+    .md-body tr:nth-child(even) td { background: var(--surface-2); }
+    .md-body .md-table-wrap { overflow-x: auto; }
+
     /* ---------- Responsive ---------- */
     @media (max-width: 960px) {
       .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
@@ -553,6 +579,7 @@
 
     let lastResult = null;     // last API response { summary, reports }
     let lastDataset = null;    // dataset that produced lastResult (for sparklines)
+    let lastLlmUsed = false;   // whether the last run requested an LLM-generated report
     let isRunning = false;
 
     // ---------------------------------------------------------------
@@ -1010,6 +1037,88 @@
       </section>`;
     }
 
+    // ---------------------------------------------------------------
+    // Minimal, dependency-free Markdown -> HTML for the LLM report.
+    // Supports: # headings, **bold**, `code`, - / 1. lists, --- rules,
+    // and GitHub-style pipe tables. Everything is escaped first, so no
+    // raw HTML from the model can inject into the page.
+    // ---------------------------------------------------------------
+    function mdInline(text) {
+      return esc(text)
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/`([^`]+)`/g, "<code>$1</code>");
+    }
+    function mdTableRow(line) {
+      let s = line.trim();
+      if (s.startsWith("|")) s = s.slice(1);
+      if (s.endsWith("|")) s = s.slice(0, -1);
+      return s.split("|").map(c => c.trim());
+    }
+    function renderMarkdown(src) {
+      const lines = String(src || "").replace(/\r\n/g, "\n").split("\n");
+      const html = [];
+      let listType = null;       // "ul" | "ol"
+      const closeList = () => { if (listType) { html.push(`</${listType}>`); listType = null; } };
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+
+        // table: header row followed by a separator row of dashes
+        if (trimmed.startsWith("|") && /^\s*\|?[\s:|-]+\|?\s*$/.test(lines[i + 1] || "") && (lines[i + 1] || "").includes("-")) {
+          closeList();
+          const header = mdTableRow(trimmed);
+          i += 2;
+          const rows = [];
+          while (i < lines.length && lines[i].trim().startsWith("|")) { rows.push(mdTableRow(lines[i].trim())); i++; }
+          i--;
+          html.push('<div class="md-table-wrap"><table><thead><tr>' +
+            header.map(c => `<th>${mdInline(c)}</th>`).join("") + "</tr></thead><tbody>" +
+            rows.map(r => "<tr>" + r.map(c => `<td>${mdInline(c)}</td>`).join("") + "</tr>").join("") +
+            "</tbody></table></div>");
+          continue;
+        }
+        if (!trimmed) { closeList(); continue; }
+        if (/^#{1,6}\s/.test(trimmed)) {
+          closeList();
+          const level = Math.min(trimmed.match(/^#+/)[0].length, 3);
+          html.push(`<h${level}>${mdInline(trimmed.replace(/^#+\s/, ""))}</h${level}>`);
+          continue;
+        }
+        if (/^([-*_])\1{2,}$/.test(trimmed)) { closeList(); html.push("<hr>"); continue; }
+        if (/^[-*]\s+/.test(trimmed)) {
+          if (listType !== "ul") { closeList(); html.push("<ul>"); listType = "ul"; }
+          html.push(`<li>${mdInline(trimmed.replace(/^[-*]\s+/, ""))}</li>`);
+          continue;
+        }
+        if (/^\d+\.\s+/.test(trimmed)) {
+          if (listType !== "ol") { closeList(); html.push("<ol>"); listType = "ol"; }
+          html.push(`<li>${mdInline(trimmed.replace(/^\d+\.\s+/, ""))}</li>`);
+          continue;
+        }
+        closeList();
+        html.push(`<p>${mdInline(trimmed)}</p>`);
+      }
+      closeList();
+      return html.join("\n");
+    }
+
+    function renderAiReport(report) {
+      // Only show when this run used the LLM. The deterministic markdown is
+      // already reflected by the structured sections, so showing it would be
+      // redundant; the LLM narrative is the value-add worth surfacing.
+      if (!lastLlmUsed || !report.markdown) return "";
+      return `
+        <details class="ai-report" open>
+          <summary>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 14l.8 2 .2.8 2 .8-2 .8-.2.8-.8 2-.8-2-.2-.8-2-.8 2-.8.2-.8z"/></svg>
+            AI 生成报告（LLM · ${esc(report.retrieval_backend || "")}）
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </summary>
+          <div class="md-body">${renderMarkdown(report.markdown)}</div>
+        </details>`;
+    }
+
     function renderReport(report) {
       const outcome = OUTCOME[report.outcome_label] || { label: report.outcome_label, cls: "info" };
       const conf = CONF[report.diagnostic_confidence] || { label: report.diagnostic_confidence || "—", cls: "info" };
@@ -1030,6 +1139,7 @@
               <div class="rep-badges">
                 <span class="badge sev-${outcome.cls}">${esc(outcome.label)}</span>
                 <span class="badge sev-${conf.cls}">置信度 ${esc(conf.label)}</span>
+                ${lastLlmUsed && report.markdown ? `<span class="badge sev-info">AI 报告</span>` : `<span class="chip ghost">确定性</span>`}
                 <span class="chip ghost">${esc(report.retrieval_backend)}</span>
               </div>
             </div>
@@ -1044,6 +1154,7 @@
                 复制 JSON
               </button>
             </div>
+            ${renderAiReport(report)}
 
             ${section("关键偏差", deviationsBody, devs.length || null)}
             ${section("可能机制", renderBullets(report.likely_mechanisms), (report.likely_mechanisms || []).length || null)}
@@ -1098,9 +1209,10 @@
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || data.error || "请求失败");
         lastDataset = payload.dataset || null;
+        lastLlmUsed = !!payload.llm;
         renderResult(data);
         const count = (data.reports || []).length;
-        setStatus(`诊断完成：生成 ${count} 份报告`, "ok");
+        setStatus(`诊断完成：生成 ${count} 份报告${lastLlmUsed ? "（含 AI 报告）" : ""}`, "ok");
         output.focus({ preventScroll: true });
       } catch (error) {
         setStatus(`诊断失败：${error.message}`, "error");
