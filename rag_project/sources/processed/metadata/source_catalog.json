@@ -3,11 +3,11 @@
     "id": "BWF_COACHES",
     "category": "official",
     "title": "BWF Coach Education / Coach Manual Level 1 and Level 2",
-    "status": "downloaded_html_and_supplemental_pdf",
+    "status": "downloaded_html",
     "source_class": "official_manual",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BWF_COACHES.html;rag_project\\sources\\raw\\pdf\\BWF_COACH_MANUAL_L1_MIRROR.pdf"
+    "downloaded_files": "rag_project/sources/raw/html/BWF_COACHES.html"
   },
   {
     "id": "BWF_SHUTTLE_TIME",
@@ -17,7 +17,7 @@
     "source_class": "official_manual",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BWF_SHUTTLE_TIME.html"
+    "downloaded_files": "rag_project/sources/raw/html/BWF_SHUTTLE_TIME.html"
   },
   {
     "id": "BOOK_GRICE",
@@ -27,7 +27,7 @@
     "source_class": "book_preview_or_product_page",
     "ingest_text": "false",
     "reason": "preview or product page only",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BOOK_GRICE.html"
+    "downloaded_files": "rag_project/sources/raw/html/BOOK_GRICE.html"
   },
   {
     "id": "BOOK_BRAHMS",
@@ -37,7 +37,7 @@
     "source_class": "book_preview_or_product_page",
     "ingest_text": "false",
     "reason": "preview or product page only",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BOOK_BRAHMS.html"
+    "downloaded_files": "rag_project/sources/raw/html/BOOK_BRAHMS.html"
   },
   {
     "id": "CN_JINYUFEIYANG",
@@ -47,7 +47,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CN_JINYUFEIYANG.html"
+    "downloaded_files": "rag_project/sources/raw/html/CN_JINYUFEIYANG.html"
   },
   {
     "id": "CN_ZHANG_RUILIN",
@@ -57,7 +57,7 @@
     "source_class": "book_preview_or_product_page",
     "ingest_text": "false",
     "reason": "preview or product page only",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CN_ZHANG_RUILIN.html"
+    "downloaded_files": "rag_project/sources/raw/html/CN_ZHANG_RUILIN.html"
   },
   {
     "id": "REV_PHOMSOUPHA_LAFFAYE",
@@ -67,7 +67,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_PHOMSOUPHA_LAFFAYE.html"
+    "downloaded_files": "rag_project/sources/raw/html/REV_PHOMSOUPHA_LAFFAYE.html"
   },
   {
     "id": "REV_WADDELL_GOWITZKE",
@@ -77,7 +77,7 @@
     "source_class": "full_text_pdf",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\REV_WADDELL_GOWITZKE.pdf"
+    "downloaded_files": "rag_project/sources/raw/pdf/REV_WADDELL_GOWITZKE.pdf"
   },
   {
     "id": "REV_LAM_LUNGE",
@@ -87,17 +87,17 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_LAM_LUNGE.html"
+    "downloaded_files": "rag_project/sources/raw/html/REV_LAM_LUNGE.html"
   },
   {
     "id": "REV_HARYANTO_SMASH",
     "category": "review",
     "title": "Biomechanical Analysis of Smash Stroke in Badminton",
-    "status": "downloaded_pdf",
-    "source_class": "full_text_pdf",
-    "ingest_text": "true",
-    "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\REV_HARYANTO_SMASH.pdf"
+    "status": "failed",
+    "source_class": "abstract_or_metadata_only",
+    "ingest_text": "false",
+    "reason": "metadata or abstract only",
+    "downloaded_files": ""
   },
   {
     "id": "REV_STEPPER_INJURIES",
@@ -107,7 +107,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_STEPPER_INJURIES.html"
+    "downloaded_files": "rag_project/sources/raw/html/REV_STEPPER_INJURIES.html"
   },
   {
     "id": "CLEAR_SORENSEN",
@@ -117,7 +117,7 @@
     "source_class": "full_text_pdf",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\CLEAR_SORENSEN.pdf"
+    "downloaded_files": "rag_project/sources/raw/pdf/CLEAR_SORENSEN.pdf"
   },
   {
     "id": "CLEAR_ZHAO_LOWER_LIMB",
@@ -127,7 +127,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_ZHAO_LOWER_LIMB.html"
+    "downloaded_files": "rag_project/sources/raw/html/CLEAR_ZHAO_LOWER_LIMB.html"
   },
   {
     "id": "CLEAR_ZHI_JIXIN_CN",
@@ -137,7 +137,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_ZHI_JIXIN_CN.html"
+    "downloaded_files": "rag_project/sources/raw/html/CLEAR_ZHI_JIXIN_CN.html"
   },
   {
     "id": "CLEAR_HUANG_EXPERT_NOVICE",
@@ -147,7 +147,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_HUANG_EXPERT_NOVICE.html"
+    "downloaded_files": "rag_project/sources/raw/html/CLEAR_HUANG_EXPERT_NOVICE.html"
   },
   {
     "id": "OVERHEAD_WANG_ARM_TRUNK",
@@ -157,27 +157,27 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\OVERHEAD_WANG_ARM_TRUNK.html"
+    "downloaded_files": "rag_project/sources/raw/html/OVERHEAD_WANG_ARM_TRUNK.html"
   },
   {
     "id": "SMASH_KING_JUMP",
     "category": "smash",
     "title": "A Correlational Analysis of Shuttlecock Speed Kinematic Determinants in the Badminton Jump Smash",
-    "status": "downloaded_pdf_static_url",
-    "source_class": "full_text_pdf",
-    "ingest_text": "true",
-    "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_KING_JUMP.pdf"
+    "status": "http_error",
+    "source_class": "abstract_or_metadata_only",
+    "ingest_text": "false",
+    "reason": "metadata or abstract only",
+    "downloaded_files": ""
   },
   {
     "id": "SMASH_LI_FOREHAND",
     "category": "smash",
     "title": "Biomechanical Insights for Developing Evidence-Based Training Programs: Overhead Forehand Smash",
-    "status": "downloaded_pdf_static_url",
-    "source_class": "full_text_pdf",
-    "ingest_text": "true",
-    "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_LI_FOREHAND.pdf"
+    "status": "http_error",
+    "source_class": "abstract_or_metadata_only",
+    "ingest_text": "false",
+    "reason": "metadata or abstract only",
+    "downloaded_files": ""
   },
   {
     "id": "SMASH_ZHANG_XFACTOR",
@@ -187,7 +187,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_ZHANG_XFACTOR.html"
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_ZHANG_XFACTOR.html"
   },
   {
     "id": "SMASH_RUSDIANA_3D",
@@ -197,7 +197,7 @@
     "source_class": "full_text_pdf",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_RUSDIANA_3D.pdf"
+    "downloaded_files": "rag_project/sources/raw/pdf/SMASH_RUSDIANA_3D.pdf"
   },
   {
     "id": "SMASH_CHEN_ACTIVE_PASSIVE",
@@ -207,7 +207,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_CHEN_ACTIVE_PASSIVE.html"
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_CHEN_ACTIVE_PASSIVE.html"
   },
   {
     "id": "SMASH_FOREHAND_BACKHAND_CN",
@@ -217,17 +217,17 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_FOREHAND_BACKHAND_CN.html"
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_FOREHAND_BACKHAND_CN.html"
   },
   {
     "id": "SMASH_HE_FATIGUE",
     "category": "smash",
     "title": "Impact of Specialized Fatigue and Backhand Smash on Ankle Biomechanics",
-    "status": "downloaded_html_and_pdf",
+    "status": "downloaded_html",
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_HE_FATIGUE.html;rag_project\\sources\\raw\\pdf\\SMASH_HE_FATIGUE.pdf"
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_HE_FATIGUE.html"
   },
   {
     "id": "SMASH_XUE_REVIEW_CN",
@@ -237,7 +237,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_XUE_REVIEW_CN.html"
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_XUE_REVIEW_CN.html"
   },
   {
     "id": "OVERHEAD_TSAI_THREE_STROKES",
@@ -247,7 +247,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\OVERHEAD_TSAI_THREE_STROKES.html"
+    "downloaded_files": "rag_project/sources/raw/html/OVERHEAD_TSAI_THREE_STROKES.html"
   },
   {
     "id": "NET_HSUEH_FOREHAND",
@@ -257,7 +257,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\NET_HSUEH_FOREHAND.html"
+    "downloaded_files": "rag_project/sources/raw/html/NET_HSUEH_FOREHAND.html"
   },
   {
     "id": "NET_TUMBLE",
@@ -267,7 +267,7 @@
     "source_class": "full_text_pdf",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\NET_TUMBLE.pdf"
+    "downloaded_files": "rag_project/sources/raw/pdf/NET_TUMBLE.pdf"
   },
   {
     "id": "SERVE_WANG_CN",
@@ -277,7 +277,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_WANG_CN.html"
+    "downloaded_files": "rag_project/sources/raw/html/SERVE_WANG_CN.html"
   },
   {
     "id": "SERVE_LARASATY_IMU",
@@ -287,7 +287,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_LARASATY_IMU.html"
+    "downloaded_files": "rag_project/sources/raw/html/SERVE_LARASATY_IMU.html"
   },
   {
     "id": "SERVE_BETTERMINTON",
@@ -297,7 +297,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_BETTERMINTON.html;rag_project\\sources\\raw\\pdf\\SERVE_BETTERMINTON.pdf"
+    "downloaded_files": "rag_project/sources/raw/html/SERVE_BETTERMINTON.html;rag_project/sources/raw/pdf/SERVE_BETTERMINTON.pdf"
   },
   {
     "id": "LUNGE_KUNTZE_COMMON",
@@ -307,7 +307,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_KUNTZE_COMMON.html"
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_KUNTZE_COMMON.html"
   },
   {
     "id": "LUNGE_MEI_RIGHT_FORWARD",
@@ -317,7 +317,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_MEI_RIGHT_FORWARD.html"
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_MEI_RIGHT_FORWARD.html"
   },
   {
     "id": "LUNGE_WANG_SPLIT_STEP",
@@ -327,7 +327,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_WANG_SPLIT_STEP.html"
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_WANG_SPLIT_STEP.html"
   },
   {
     "id": "LUNGE_XIE_FOREHAND_BACKHAND",
@@ -337,7 +337,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_XIE_FOREHAND_BACKHAND.html;rag_project\\sources\\raw\\pdf\\LUNGE_XIE_FOREHAND_BACKHAND.pdf"
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_XIE_FOREHAND_BACKHAND.html;rag_project/sources/raw/pdf/LUNGE_XIE_FOREHAND_BACKHAND.pdf"
   },
   {
     "id": "LUNGE_CUI_TAKEOFF_LANDING",
@@ -347,7 +347,7 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_CUI_TAKEOFF_LANDING.html"
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_CUI_TAKEOFF_LANDING.html"
   },
   {
     "id": "FOOTWORK_LIN_SHOE_CN",
@@ -357,16 +357,16 @@
     "source_class": "full_text_html",
     "ingest_text": "true",
     "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\FOOTWORK_LIN_SHOE_CN.html"
+    "downloaded_files": "rag_project/sources/raw/html/FOOTWORK_LIN_SHOE_CN.html"
   },
   {
     "id": "FOOTWORK_START_CN",
     "category": "footwork",
     "title": "羽球啟動步法之起跳時機及下肢生物力學分析",
-    "status": "downloaded_html",
-    "source_class": "full_text_html",
-    "ingest_text": "true",
-    "reason": "eligible evidence source",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\FOOTWORK_START_CN.html"
+    "status": "failed",
+    "source_class": "abstract_or_metadata_only",
+    "ingest_text": "false",
+    "reason": "metadata or abstract only",
+    "downloaded_files": ""
   }
 ]

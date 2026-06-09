@@ -31,7 +31,7 @@
         "CLEAR_ZHAO_LOWER_LIMB",
         "LUNGE_XIE_FOREHAND_BACKHAND",
         "SMASH_ZHANG_XFACTOR",
-        "SMASH_HE_FATIGUE"
+        "REV_LAM_LUNGE"
       ],
       "hit": true,
       "top_k": 5,
@@ -46,8 +46,8 @@
         "OVERHEAD_WANG_ARM_TRUNK",
         "CLEAR_HUANG_EXPERT_NOVICE",
         "SMASH_ZHANG_XFACTOR",
-        "SMASH_HE_FATIGUE",
-        "CLEAR_ZHAO_LOWER_LIMB"
+        "CLEAR_ZHAO_LOWER_LIMB",
+        "OVERHEAD_TSAI_THREE_STROKES"
       ],
       "hit": true,
       "top_k": 5,
@@ -79,7 +79,7 @@
         "BWF_COACHES",
         "BWF_SHUTTLE_TIME",
         "CLEAR_ZHAO_LOWER_LIMB",
-        "SMASH_HE_FATIGUE",
+        "LUNGE_WANG_SPLIT_STEP",
         "CLEAR_HUANG_EXPERT_NOVICE"
       ],
       "hit": true,

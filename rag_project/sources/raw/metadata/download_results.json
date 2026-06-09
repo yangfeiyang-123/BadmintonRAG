@@ -6,12 +6,12 @@
     "year": "",
     "url": "https://development.bwfbadminton.com/coaches",
     "expected_access": "official_page",
-    "status": "downloaded_html_and_supplemental_pdf",
+    "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=UTF-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BWF_COACHES.html;rag_project\\sources\\raw\\pdf\\BWF_COACH_MANUAL_L1_MIRROR.pdf",
+    "downloaded_files": "rag_project/sources/raw/html/BWF_COACHES.html",
     "pdf_candidates": "",
-    "notes": "Supplemented BWF Coach Manual Level 1 from public federation mirror; official BWF page saved as HTML."
+    "notes": ""
   },
   {
     "id": "BWF_SHUTTLE_TIME",
@@ -23,7 +23,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=UTF-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BWF_SHUTTLE_TIME.html",
+    "downloaded_files": "rag_project/sources/raw/html/BWF_SHUTTLE_TIME.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -35,11 +35,11 @@
     "url": "https://us.humankinetics.com/products/badminton-steps-to-success-2nd-edition",
     "expected_access": "book_page",
     "status": "downloaded_html",
-    "primary_status_code": "",
-    "primary_content_type": "",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BOOK_GRICE.html",
+    "primary_status_code": "200",
+    "primary_content_type": "text/html; charset=utf-8",
+    "downloaded_files": "rag_project/sources/raw/html/BOOK_GRICE.html",
     "pdf_candidates": "",
-    "notes": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)> | Supplemented with HTML using unverified SSL context for this commercial book landing page."
+    "notes": ""
   },
   {
     "id": "BOOK_BRAHMS",
@@ -51,7 +51,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=UTF-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\BOOK_BRAHMS.html",
+    "downloaded_files": "rag_project/sources/raw/html/BOOK_BRAHMS.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -65,7 +65,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html;charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CN_JINYUFEIYANG.html",
+    "downloaded_files": "rag_project/sources/raw/html/CN_JINYUFEIYANG.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -78,8 +78,8 @@
     "expected_access": "possible_pdf",
     "status": "downloaded_html",
     "primary_status_code": "200",
-    "primary_content_type": "application/octet-stream",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CN_ZHANG_RUILIN.html",
+    "primary_content_type": "text/html",
+    "downloaded_files": "rag_project/sources/raw/html/CN_ZHANG_RUILIN.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -93,7 +93,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_PHOMSOUPHA_LAFFAYE.html",
+    "downloaded_files": "rag_project/sources/raw/html/REV_PHOMSOUPHA_LAFFAYE.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -107,7 +107,7 @@
     "status": "downloaded_pdf",
     "primary_status_code": "200",
     "primary_content_type": "application/pdf",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\REV_WADDELL_GOWITZKE.pdf",
+    "downloaded_files": "rag_project/sources/raw/pdf/REV_WADDELL_GOWITZKE.pdf",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -121,7 +121,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_LAM_LUNGE.html",
+    "downloaded_files": "rag_project/sources/raw/html/REV_LAM_LUNGE.html",
     "pdf_candidates": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7648456/pdf/peerj-08-10300.pdf;https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg",
     "notes": "PDF candidate not saved: https://pmc.ncbi.nlm.nih.gov/articles/PMC7648456/pdf/peerj-08-10300.pdf content_type=text/html; charset=utf-8 | PDF candidate not saved: https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg content_type=image/svg+xml"
   },
@@ -132,12 +132,12 @@
     "year": "2024",
     "url": "https://revistaretos.org/index.php/retos/article/download/107662/78753/425050",
     "expected_access": "open_pdf",
-    "status": "downloaded_pdf",
+    "status": "failed",
     "primary_status_code": "",
     "primary_content_type": "",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\REV_HARYANTO_SMASH.pdf",
+    "downloaded_files": "",
     "pdf_candidates": "",
-    "notes": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)> | Supplemented with direct PDF using unverified SSL context because site certificate chain failed locally."
+    "notes": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)>"
   },
   {
     "id": "REV_STEPPER_INJURIES",
@@ -149,7 +149,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\REV_STEPPER_INJURIES.html",
+    "downloaded_files": "rag_project/sources/raw/html/REV_STEPPER_INJURIES.html",
     "pdf_candidates": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11781153/pdf/bmjsem-10-4.pdf;https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg",
     "notes": "PDF candidate not saved: https://pmc.ncbi.nlm.nih.gov/articles/PMC11781153/pdf/bmjsem-10-4.pdf content_type=text/html; charset=utf-8 | PDF candidate not saved: https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg content_type=image/svg+xml"
   },
@@ -163,7 +163,7 @@
     "status": "downloaded_pdf",
     "primary_status_code": "200",
     "primary_content_type": "application/pdf",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\CLEAR_SORENSEN.pdf",
+    "downloaded_files": "rag_project/sources/raw/pdf/CLEAR_SORENSEN.pdf",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -177,7 +177,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_ZHAO_LOWER_LIMB.html",
+    "downloaded_files": "rag_project/sources/raw/html/CLEAR_ZHAO_LOWER_LIMB.html",
     "pdf_candidates": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6348812/pdf/ABB2019-7048345.pdf;https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg",
     "notes": "PDF candidate not saved: https://pmc.ncbi.nlm.nih.gov/articles/PMC6348812/pdf/ABB2019-7048345.pdf content_type=text/html; charset=utf-8 | PDF candidate not saved: https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg content_type=image/svg+xml"
   },
@@ -191,7 +191,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html;charset=UTF-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_ZHI_JIXIN_CN.html",
+    "downloaded_files": "rag_project/sources/raw/html/CLEAR_ZHI_JIXIN_CN.html",
     "pdf_candidates": "https://stxb.magtech.com.cn/develop/static/common/js/download_cn.js",
     "notes": "PDF candidate not saved: https://stxb.magtech.com.cn/develop/static/common/js/download_cn.js content_type=application/javascript;charset=UTF-8"
   },
@@ -205,7 +205,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\CLEAR_HUANG_EXPERT_NOVICE.html",
+    "downloaded_files": "rag_project/sources/raw/html/CLEAR_HUANG_EXPERT_NOVICE.html",
     "pdf_candidates": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12060343/pdf/13102_2025_Article_1163.pdf;https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg",
     "notes": "PDF candidate not saved: https://pmc.ncbi.nlm.nih.gov/articles/PMC12060343/pdf/13102_2025_Article_1163.pdf content_type=text/html; charset=utf-8 | PDF candidate not saved: https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg content_type=image/svg+xml"
   },
@@ -219,7 +219,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\OVERHEAD_WANG_ARM_TRUNK.html",
+    "downloaded_files": "rag_project/sources/raw/html/OVERHEAD_WANG_ARM_TRUNK.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -230,12 +230,12 @@
     "year": "2020",
     "url": "https://www.mdpi.com/2076-3417/10/4/1248",
     "expected_access": "open_article",
-    "status": "downloaded_pdf_static_url",
+    "status": "http_error",
     "primary_status_code": "403",
     "primary_content_type": "text/html",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_KING_JUMP.pdf",
+    "downloaded_files": "",
     "pdf_candidates": "",
-    "notes": "HTTP Error 403: Forbidden | Supplemented from MDPI static resource domain after main MDPI page returned 403."
+    "notes": "HTTP Error 403: Forbidden"
   },
   {
     "id": "SMASH_LI_FOREHAND",
@@ -244,12 +244,12 @@
     "year": "2023",
     "url": "https://www.mdpi.com/2076-3417/13/22/12488",
     "expected_access": "open_article",
-    "status": "downloaded_pdf_static_url",
+    "status": "http_error",
     "primary_status_code": "403",
     "primary_content_type": "text/html",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_LI_FOREHAND.pdf",
+    "downloaded_files": "",
     "pdf_candidates": "",
-    "notes": "HTTP Error 403: Forbidden | Supplemented from MDPI static resource domain after main MDPI page returned 403."
+    "notes": "HTTP Error 403: Forbidden"
   },
   {
     "id": "SMASH_ZHANG_XFACTOR",
@@ -261,7 +261,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_ZHANG_XFACTOR.html",
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_ZHANG_XFACTOR.html",
     "pdf_candidates": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5260572/pdf/hukin-2016-0006.pdf;https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg",
     "notes": "PDF candidate not saved: https://pmc.ncbi.nlm.nih.gov/articles/PMC5260572/pdf/hukin-2016-0006.pdf content_type=text/html; charset=utf-8 | PDF candidate not saved: https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg content_type=image/svg+xml"
   },
@@ -275,7 +275,7 @@
     "status": "downloaded_pdf",
     "primary_status_code": "200",
     "primary_content_type": "application/pdf",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\SMASH_RUSDIANA_3D.pdf",
+    "downloaded_files": "rag_project/sources/raw/pdf/SMASH_RUSDIANA_3D.pdf",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -289,7 +289,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_CHEN_ACTIVE_PASSIVE.html",
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_CHEN_ACTIVE_PASSIVE.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -303,7 +303,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_FOREHAND_BACKHAND_CN.html",
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_FOREHAND_BACKHAND_CN.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -314,11 +314,11 @@
     "year": "2024",
     "url": "https://www.nature.com/articles/s41598-024-61141-z",
     "expected_access": "open_article",
-    "status": "downloaded_html_and_pdf",
+    "status": "downloaded_html",
     "primary_status_code": "200",
-    "primary_content_type": "text/html; charset=\"UTF-8\"",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_HE_FATIGUE.html;rag_project\\sources\\raw\\pdf\\SMASH_HE_FATIGUE.pdf",
-    "pdf_candidates": "https://www.nature.com/articles/s41598-024-61141-z.pdf",
+    "primary_content_type": "text/html; charset=utf-8",
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_HE_FATIGUE.html",
+    "pdf_candidates": "",
     "notes": ""
   },
   {
@@ -331,7 +331,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SMASH_XUE_REVIEW_CN.html",
+    "downloaded_files": "rag_project/sources/raw/html/SMASH_XUE_REVIEW_CN.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -345,7 +345,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\OVERHEAD_TSAI_THREE_STROKES.html",
+    "downloaded_files": "rag_project/sources/raw/html/OVERHEAD_TSAI_THREE_STROKES.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -359,7 +359,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\NET_HSUEH_FOREHAND.html",
+    "downloaded_files": "rag_project/sources/raw/html/NET_HSUEH_FOREHAND.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -373,7 +373,7 @@
     "status": "downloaded_pdf",
     "primary_status_code": "200",
     "primary_content_type": "application/pdf",
-    "downloaded_files": "rag_project\\sources\\raw\\pdf\\NET_TUMBLE.pdf",
+    "downloaded_files": "rag_project/sources/raw/pdf/NET_TUMBLE.pdf",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -387,7 +387,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_WANG_CN.html",
+    "downloaded_files": "rag_project/sources/raw/html/SERVE_WANG_CN.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -401,9 +401,9 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_LARASATY_IMU.html",
+    "downloaded_files": "rag_project/sources/raw/html/SERVE_LARASATY_IMU.html",
     "pdf_candidates": "https://ojs.transpublika.com/public/site/images/admin/download2.png;https://areste.org/index.php/oai/citationstylelanguage/download/ris?submissionId=66&amp;publicationId=66;https://areste.org/index.php/oai/citationstylelanguage/download/bibtex?submissionId=66&amp;publicationId=66",
-    "notes": "PDF candidate not saved: https://ojs.transpublika.com/public/site/images/admin/download2.png content_type=image/png | PDF candidate not saved: https://areste.org/index.php/oai/citationstylelanguage/download/ris?submissionId=66&amp;publicationId=66 content_type=application/x-Research-Info-Systems"
+    "notes": "PDF candidate not saved: https://ojs.transpublika.com/public/site/images/admin/download2.png content_type=image/png | PDF candidate not saved: https://areste.org/index.php/oai/citationstylelanguage/download/ris?submissionId=66&amp;publicationId=66 content_type=application/x-Research-Info-Systems | PDF candidate not saved: https://areste.org/index.php/oai/citationstylelanguage/download/bibtex?submissionId=66&amp;publicationId=66 content_type=application/x-bibtex"
   },
   {
     "id": "SERVE_BETTERMINTON",
@@ -415,7 +415,7 @@
     "status": "downloaded_html_and_pdf",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\SERVE_BETTERMINTON.html;rag_project\\sources\\raw\\pdf\\SERVE_BETTERMINTON.pdf",
+    "downloaded_files": "rag_project/sources/raw/html/SERVE_BETTERMINTON.html;rag_project/sources/raw/pdf/SERVE_BETTERMINTON.pdf",
     "pdf_candidates": "https://arxiv.org/pdf/2312.01487",
     "notes": ""
   },
@@ -429,7 +429,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_KUNTZE_COMMON.html",
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_KUNTZE_COMMON.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -443,7 +443,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_MEI_RIGHT_FORWARD.html",
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_MEI_RIGHT_FORWARD.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -457,7 +457,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_WANG_SPLIT_STEP.html",
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_WANG_SPLIT_STEP.html",
     "pdf_candidates": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11117488/pdf/bioengineering-11-00501.pdf;https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg",
     "notes": "PDF candidate not saved: https://pmc.ncbi.nlm.nih.gov/articles/PMC11117488/pdf/bioengineering-11-00501.pdf content_type=text/html; charset=utf-8 | PDF candidate not saved: https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg content_type=image/svg+xml"
   },
@@ -471,7 +471,7 @@
     "status": "downloaded_html_and_pdf",
     "primary_status_code": "200",
     "primary_content_type": "text/html;charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_XIE_FOREHAND_BACKHAND.html;rag_project\\sources\\raw\\pdf\\LUNGE_XIE_FOREHAND_BACKHAND.pdf",
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_XIE_FOREHAND_BACKHAND.html;rag_project/sources/raw/pdf/LUNGE_XIE_FOREHAND_BACKHAND.pdf",
     "pdf_candidates": "https://www.frontiersin.org/documents/annual-report-2025.pdf",
     "notes": ""
   },
@@ -485,7 +485,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\LUNGE_CUI_TAKEOFF_LANDING.html",
+    "downloaded_files": "rag_project/sources/raw/html/LUNGE_CUI_TAKEOFF_LANDING.html",
     "pdf_candidates": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9598458/pdf/biology-11-01401.pdf;https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg",
     "notes": "PDF candidate not saved: https://pmc.ncbi.nlm.nih.gov/articles/PMC9598458/pdf/biology-11-01401.pdf content_type=text/html; charset=utf-8 | PDF candidate not saved: https://cdn.ncbi.nlm.nih.gov/pmc/pd-medc-pmc-cloudpmc-viewer/production/674d4f95/var/data/static/img/file_download.svg content_type=image/svg+xml"
   },
@@ -499,7 +499,7 @@
     "status": "downloaded_html",
     "primary_status_code": "200",
     "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\FOOTWORK_LIN_SHOE_CN.html",
+    "downloaded_files": "rag_project/sources/raw/html/FOOTWORK_LIN_SHOE_CN.html",
     "pdf_candidates": "",
     "notes": ""
   },
@@ -510,11 +510,11 @@
     "year": "",
     "url": "https://ndltd.ncl.edu.tw/handle/07201295445629538525",
     "expected_access": "metadata_page",
-    "status": "downloaded_html",
-    "primary_status_code": "200",
-    "primary_content_type": "text/html; charset=utf-8",
-    "downloaded_files": "rag_project\\sources\\raw\\html\\FOOTWORK_START_CN.html",
+    "status": "failed",
+    "primary_status_code": "",
+    "primary_content_type": "",
+    "downloaded_files": "",
     "pdf_candidates": "",
-    "notes": ""
+    "notes": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1032)>"
   }
 ]
