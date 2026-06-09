@@ -23,6 +23,7 @@ PACKAGE_DIR = _REPO_ROOT / "badminton_forehand_clear_RAG_package"
 CHUNKS_PATH = PACKAGE_DIR / "data" / "chunks.jsonl"
 CATALOG_PATH = PACKAGE_DIR / "badminton_forehand_clear_sources.csv"
 CROSSWALK_PATH = PACKAGE_DIR / "source_id_crosswalk.csv"
+LEGACY_CATALOG_PATH = _RAG_ROOT / "manifests" / "badminton_sources.csv"
 
 # Chinese labels for the coarse chunk evidence layer (KB §8.1/§8.2), shown to users.
 EVIDENCE_LAYER_LABEL_ZH = {
@@ -38,6 +39,13 @@ EVIDENCE_LAYER_LABEL_ZH = {
     "dataset": "数据集/方法",
     "injury_review": "伤病/安全背景",
     "implementation": "实现/工程说明",
+    # legacy evidence levels (keyword/vector backend heuristic, evidence_index._evidence_level)
+    "official_instruction": "官方教学指导",
+    "direct_biomechanics_forehand_clear": "直接高远球生物力学",
+    "direct_emg": "直接 EMG",
+    "expert_novice_comparison": "专家-新手对比",
+    "overhead_stroke_transfer": "头顶击球迁移证据",
+    "mechanistic_inference": "机制推断",
 }
 
 # Layers treated as direct-clear for §10.2 evidence boost / ranking.
@@ -79,6 +87,33 @@ def load_catalog() -> dict[str, dict[str, str]]:
         for row in csv.DictReader(CATALOG_PATH.open(encoding="utf-8")):
             catalog[row["id"]] = row
     return catalog
+
+
+@lru_cache(maxsize=1)
+def load_legacy_catalog() -> dict[str, dict[str, str]]:
+    catalog: dict[str, dict[str, str]] = {}
+    if LEGACY_CATALOG_PATH.exists():
+        for row in csv.DictReader(LEGACY_CATALOG_PATH.open(encoding="utf-8-sig")):
+            catalog[row["id"]] = row
+    return catalog
+
+
+def resolve_source_url(ident: str) -> str:
+    """Best public URL for a source id (package [Sxx] or legacy string id) so a reader
+    can open the original. Prefers browse_url, then download_url, then DOI; falls back
+    to the legacy manifest url."""
+    row = load_catalog().get(ident)
+    if row:
+        if row.get("browse_url"):
+            return row["browse_url"]
+        if row.get("download_url"):
+            return row["download_url"]
+        if row.get("doi"):
+            return f"https://doi.org/{row['doi']}"
+    legacy = load_legacy_catalog().get(ident)
+    if legacy and legacy.get("url"):
+        return legacy["url"]
+    return ""
 
 
 @lru_cache(maxsize=1)

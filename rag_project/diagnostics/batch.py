@@ -21,21 +21,32 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _report_payload(report: DiagnosisReport, evidence: list[EvidenceChunk], retrieval_backend: str) -> dict[str, object]:
+    from rag_project.knowledge.concept_kb import evidence_layer_label, load_crosswalk, resolve_source_url
+
+    crosswalk = load_crosswalk()
     payload = asdict(report)
     payload["outcome_label"] = report.outcome_label.value
     payload["retrieval_backend"] = retrieval_backend
-    payload["evidence"] = [
-        {
-            "chunk_id": chunk.chunk_id,
-            "source_id": chunk.source_id,
-            "title": chunk.title,
-            "source_class": chunk.source_class,
-            "evidence_level": chunk.evidence_level,
-            "score": chunk.score,
-            "artifact_path": chunk.artifact_path,
-        }
-        for chunk in evidence
-    ]
+    evidence_items = []
+    for chunk in evidence:
+        sids = list(chunk.source_ids) or [crosswalk.to_package(chunk.source_id)]
+        urls = {sid: resolve_source_url(sid) or resolve_source_url(chunk.source_id) for sid in sids}
+        evidence_items.append(
+            {
+                "chunk_id": chunk.chunk_id,
+                "source_id": chunk.source_id,
+                "source_ids": sids,
+                "citation": "".join(f"[{sid}]" for sid in sids),
+                "title": chunk.title,
+                "source_class": chunk.source_class,
+                "evidence_level": chunk.evidence_level,
+                "evidence_layer_zh": evidence_layer_label(chunk.evidence_level),
+                "urls": {k: v for k, v in urls.items() if v},  # original-source links
+                "score": chunk.score,
+                "artifact_path": chunk.artifact_path,
+            }
+        )
+    payload["evidence"] = evidence_items
     return payload
 
 

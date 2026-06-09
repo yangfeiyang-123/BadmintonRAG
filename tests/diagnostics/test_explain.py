@@ -37,7 +37,7 @@ def test_renders_markdown_with_evidence_citations():
                 feature_group="joint_angle",
                 phase="acceleration",
                 severity="high",
-                goal="提高 trunk_rotation 到正确模板范围。",
+                goal="提高「躯干旋转」到正确模板范围。",
                 drill="练习蹬地、转髋、转体到击球窗口的连续释放。",
                 validation_metric="bring_observed_value_inside_template_range",
             )
@@ -51,9 +51,9 @@ def test_renders_markdown_with_evidence_citations():
                 phase="acceleration",
                 severity="high",
                 deviation_direction="below_template",
-                mechanism="trunk-led forward momentum is insufficient",
-                rationale="trunk_rotation_peak is lower than the correct-template range during acceleration.",
-                correction_focus="Move trunk_rotation back toward 36-46 degree.",
+                mechanism="躯干带动不足",
+                rationale="躯干旋转·峰值在前挥加速阶段低于正确模板范围。",
+                correction_focus="把「躯干旋转」的偏差调回 36-46 度。",
                 evidence_query="badminton forehand clear ball_high_not_far trunk_rotation_peak",
             )
         ],
@@ -77,14 +77,22 @@ def test_renders_markdown_with_evidence_citations():
 
     assert "## 诊断结论" in markdown
     assert "击球阶段向前动量不足" in markdown
-    assert "trunk_rotation_peak" in markdown
-    assert "CLEAR_ZHAO_LOWER_LIMB" in markdown
-    # INTEG-06: evidence is cited as [Sxx] (legacy id translated via crosswalk) with the evidence-layer label.
-    assert "[S06]" in markdown
-    assert "direct_biomechanics_forehand_clear" in markdown
-    assert "正确模板范围" in markdown
-    assert "36" in markdown
-    assert "46" in markdown
-    assert "joint_angle/trunk_rotation" in markdown
+    # Structured output is Chinese: joint/muscle names and field labels translated.
+    assert "躯干旋转·峰值" in markdown
+    assert "关节角·躯干旋转" in markdown
+    assert "前挥加速" in markdown
+    assert "低于正确模板" in markdown
+    assert "正确模板范围" in markdown and "36" in markdown and "46" in markdown
     assert "## 结构化改进计划" in markdown
-    assert "bring_observed_value_inside_template_range" in markdown
+    assert "使观测值回到正确模板范围" in markdown
+    assert "## 结果-偏差解释链" in markdown
+    # INTEG-06: [Sxx] citation + Chinese evidence-layer label.
+    assert "[S06]" in markdown
+    assert "直接高远球生物力学" in markdown
+    # Task 1: original-source URL is shown so the reader can open the literature.
+    assert "原文 S06" in markdown and "https://" in markdown
+    # No English joint/muscle identifiers or raw field names leak into the structured output.
+    assert "trunk_rotation_peak" not in markdown
+    assert "joint_angle/" not in markdown
+    assert "below_template" not in markdown
+    assert "evidence_query" not in markdown

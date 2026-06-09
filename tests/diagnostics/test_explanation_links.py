@@ -7,7 +7,7 @@ def test_renders_outcome_deviation_explanation_links():
         sample_id="clear_002",
         action_type="forehand_clear",
         outcome_label=OutcomeLabel.BALL_HIGH_NOT_FAR,
-        primary_diagnosis="forward momentum insufficient",
+        primary_diagnosis="击球阶段向前动量不足",
         diagnostic_confidence="medium",
         explanation_links=[
             ExplanationLink(
@@ -18,9 +18,9 @@ def test_renders_outcome_deviation_explanation_links():
                 phase="acceleration",
                 severity="high",
                 deviation_direction="below_template",
-                mechanism="trunk-led forward momentum is insufficient",
-                rationale="trunk_rotation_peak is lower than the correct-template range during acceleration.",
-                correction_focus="Move trunk_rotation back toward 36-46 degree.",
+                mechanism="躯干带动不足",
+                rationale="躯干旋转·峰值在前挥加速阶段低于正确模板范围。",
+                correction_focus="把「躯干旋转」的偏差调回 36-46 度。",
                 evidence_query="badminton forehand clear ball_high_not_far trunk_rotation_peak",
             )
         ],
@@ -28,8 +28,15 @@ def test_renders_outcome_deviation_explanation_links():
 
     markdown = render_diagnosis_markdown(report, [])
 
-    assert "## Outcome-Deviation Explanation Links" in markdown
-    assert "trunk_rotation_peak -> ball_high_not_far" in markdown
-    assert "trunk-led forward momentum is insufficient" in markdown
-    assert "Move trunk_rotation back toward 36-46 degree." in markdown
-
+    # Section renamed to Chinese; joint/muscle names and labels translated.
+    assert "## 结果-偏差解释链" in markdown
+    assert "躯干旋转·峰值" in markdown
+    assert "后果「球过高不够远」" in markdown
+    assert "关节角·躯干旋转" in markdown
+    assert "前挥加速" in markdown
+    assert "躯干带动不足" in markdown
+    assert "把「躯干旋转」的偏差调回" in markdown
+    # No English raw identifiers or the old English section title.
+    assert "Outcome-Deviation Explanation Links" not in markdown
+    assert "trunk_rotation_peak ->" not in markdown
+    assert "evidence_query" not in markdown

@@ -2,6 +2,15 @@ from __future__ import annotations
 
 from rag_project.diagnostics.features import extract_features
 from rag_project.diagnostics.rules_forehand_clear import OUTCOME_RULES
+from rag_project.diagnostics.zh_labels import (
+    zh_direction,
+    zh_feature,
+    zh_outcome,
+    zh_phase,
+    zh_severity,
+    zh_signal,
+    zh_unit,
+)
 from rag_project.diagnostics.schemas import (
     CorrectTemplate,
     CorrectionAction,
@@ -51,23 +60,25 @@ def _feature_source(feature_name: str) -> tuple[str, str]:
 
 
 def _drill_for_deviation(deviation: Deviation) -> str:
+    signal_zh = zh_signal(deviation.signal_name)
     if deviation.feature_group == "muscle_activation":
-        return f"在慢速分解挥拍中监控 {deviation.signal_name} 激活峰值和峰值时机，逐步接近正确模板范围。"
+        return f"在慢速分解挥拍中监控「{signal_zh}」的激活峰值和峰值时机，逐步接近正确模板范围。"
     if "trunk_rotation" in deviation.signal_name:
         return "练习蹬地、转髋、转体到击球窗口的连续释放，避免只用手臂向上带拍。"
     if "forearm_pronation" in deviation.signal_name or "wrist" in deviation.signal_name:
         return "练习击球前后窗口的前臂旋前和腕部释放，让拍面在身体前上方完成加速。"
     if "elbow" in deviation.signal_name or "shoulder" in deviation.signal_name:
         return "用慢速到中速分解挥拍建立肩、肘、腕的近端到远端释放顺序。"
-    return f"针对 {deviation.signal_name} 做低速分解练习，并用模板范围复查。"
+    return f"针对「{signal_zh}」做低速分解练习，并用模板范围复查。"
 
 
 def _goal_for_deviation(deviation: Deviation) -> str:
     direction = "提高" if deviation.direction == "below_template" else "降低"
+    unit_zh = zh_unit(deviation.unit)
     return (
-        f"{direction} {deviation.signal_name} 在 {deviation.phase} 阶段的 {deviation.feature}，"
-        f"从 {deviation.observed_value:.4g} {deviation.unit} 调整到 "
-        f"{deviation.template_lower_bound:.4g}-{deviation.template_upper_bound:.4g} {deviation.unit}。"
+        f"{direction}「{zh_signal(deviation.signal_name)}」在{zh_phase(deviation.phase)}阶段的{zh_feature(deviation.feature)}，"
+        f"从 {deviation.observed_value:.4g} {unit_zh} 调整到 "
+        f"{deviation.template_lower_bound:.4g}-{deviation.template_upper_bound:.4g} {unit_zh}。"
     )
 
 
@@ -114,7 +125,6 @@ def _build_explanation_links(
     links: list[ExplanationLink] = []
     for deviation in deviations:
         mechanism = _mechanism_for_deviation(deviation, mechanisms)
-        direction = "lower than" if deviation.direction == "below_template" else "higher than"
         links.append(
             ExplanationLink(
                 outcome_label=outcome_label,
@@ -126,13 +136,16 @@ def _build_explanation_links(
                 deviation_direction=deviation.direction,
                 mechanism=mechanism,
                 rationale=(
-                    f"{deviation.feature} is {direction} the correct-template range during "
-                    f"{deviation.phase}; this signal is linked to {outcome_label} through {mechanism}."
+                    f"{zh_feature(deviation.feature)}在{zh_phase(deviation.phase)}阶段"
+                    f"{zh_direction(deviation.direction)}范围；该信号通过「{mechanism}」"
+                    f"与后果「{zh_outcome(outcome_label)}」相关联。"
                 ),
                 correction_focus=(
-                    f"Move {deviation.signal_name} {deviation.direction} deviation back toward "
-                    f"{deviation.template_lower_bound:.4g}-{deviation.template_upper_bound:.4g} {deviation.unit}."
+                    f"把「{zh_signal(deviation.signal_name)}」的偏差调回 "
+                    f"{deviation.template_lower_bound:.4g}-{deviation.template_upper_bound:.4g} "
+                    f"{zh_unit(deviation.unit)}。"
                 ),
+                # evidence_query stays English: it is a retrieval query, not display text.
                 evidence_query=(
                     f"badminton forehand clear {outcome_label} {deviation.feature} "
                     f"{deviation.signal_name} {mechanism}"
@@ -166,7 +179,7 @@ def diagnose_sample(sample: DiagnosticSample, template: CorrectTemplate) -> Diag
                 observed_value=observed.value,
                 template_value=template_feature.mean,
                 unit=template_feature.unit,
-                interpretation=f"{name} 相对正确模板出现 {severity} 偏差。",
+                interpretation=f"{zh_feature(name)}相对正确模板出现{zh_severity(severity)}偏差。",
                 template_lower_bound=template_feature.lower_bound,
                 template_upper_bound=template_feature.upper_bound,
                 template_std=template_feature.std,

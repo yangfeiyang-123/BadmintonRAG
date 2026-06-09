@@ -5,7 +5,7 @@ from typing import Protocol
 
 from rag_project.diagnostics.explain import render_diagnosis_markdown
 from rag_project.diagnostics.schemas import DiagnosisReport
-from rag_project.knowledge.concept_kb import evidence_layer_label, load_crosswalk
+from rag_project.knowledge.concept_kb import evidence_layer_label, load_crosswalk, resolve_source_url
 from rag_project.knowledge.evidence_index import EvidenceChunk
 
 
@@ -19,10 +19,12 @@ def _evidence_payload(evidence: list[EvidenceChunk]) -> list[dict[str, object]]:
     payload = []
     for chunk in evidence:
         sids = list(chunk.source_ids) or [crosswalk.to_package(chunk.source_id)]
+        urls = {sid: resolve_source_url(sid) or resolve_source_url(chunk.source_id) for sid in sids}
         payload.append(
             {
                 "citation": "".join(f"[{sid}]" for sid in sids),  # [Sxx] for the answer
                 "source_ids": sids,
+                "urls": {k: v for k, v in urls.items() if v},  # original-source links
                 "evidence_layer": chunk.evidence_level,
                 "evidence_layer_zh": evidence_layer_label(chunk.evidence_level),
                 "title": chunk.title,
@@ -79,7 +81,8 @@ def build_diagnostic_messages(report: DiagnosisReport, evidence: list[EvidenceCh
         "只能基于用户提供的诊断标签、关节角/肌肉激活偏差摘要和文献证据回答，不要编造数据、论文或来源。"
         "输出必须包含：错误判断、错在哪里、可能发力/肌肉激活机制、改进建议、证据边界。"
         "涉及肌肉激活时，如果证据来自运动学或动力链推断而非直接 EMG，应明确写成机制推断。"
-        "引用文献时使用每条证据的 citation 字段（形如 [S05]）；"
+        "引用文献时使用每条证据的 citation 字段（形如 [S05]），并在该证据处附上其 urls 字段中的原文链接；"
+        "肌肉名与关节角一律使用中文（如 躯干旋转、肩内旋、前臂旋前、腹外斜肌、肱三头肌），不要使用英文标识符；"
         "必须区分证据层级（直接高远球证据 / 头顶多击球 / 杀球·EMG·方法学类比），"
         "凡使用杀球或类比证据（evidence_layer 含 smash/emg/msk）必须就地说明其为类比、不可当高远球定量真值。"
         "不得说‘动作轨迹正确就证明肌肉激活正确’；不展开手指肌肉与握拍压力；"

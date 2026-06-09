@@ -18,6 +18,9 @@ rag_project/sources/raw/html/
 # Editor workspace config (machine-specific)
 *.code-workspace
 
+# Runtime server logs
+*.log
+
 # Local launch scripts / env files that may hold secrets (never commit)
 *.local.ps1
 .env

@@ -93,4 +93,6 @@ def test_generate_diagnostic_report_falls_back_to_markdown_without_client():
     text = generate_diagnostic_report(_report(), _evidence())
 
     assert "# 正手高远球诊断报告：clear_001" in text
-    assert "CLEAR_ZHAO_LOWER_LIMB" in text
+    # Fallback markdown cites [Sxx] (legacy CLEAR_ZHAO_LOWER_LIMB -> S06) with an original-source URL.
+    assert "[S06]" in text
+    assert "原文 S06" in text and "https://" in text

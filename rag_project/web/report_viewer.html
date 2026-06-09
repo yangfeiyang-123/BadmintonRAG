@@ -422,6 +422,9 @@
     .ev-item { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); padding: 11px 13px; }
     .ev-top { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .ev-title { margin-top: 5px; font-size: 13px; color: var(--ink); }
+    .ev-links { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .ev-link { font-size: 12px; color: var(--primary); text-decoration: none; border-bottom: 1px dashed var(--primary); }
+    .ev-link:hover { text-decoration: none; border-bottom-style: solid; }
 
     /* ---------- AI markdown report ---------- */
     .ai-report { margin-top: 14px; border: 1px solid var(--info-line); background: var(--info-bg); border-radius: var(--radius-sm); overflow: hidden; }
@@ -1019,15 +1022,24 @@
     }
 
     function renderEvidence(report) {
-      return `<ul class="ev-list">${(report.evidence || []).map(e => `
+      return `<ul class="ev-list">${(report.evidence || []).map(e => {
+        const cite = e.citation || ("[" + esc(e.source_id) + "]");
+        const layer = e.evidence_layer_zh || e.evidence_level || "";
+        const urls = e.urls || {};
+        const links = Object.keys(urls).map(sid =>
+          `<a class="ev-link" href="${esc(urls[sid])}" target="_blank" rel="noopener">原文 ${esc(sid)} ↗</a>`
+        ).join(" ");
+        return `
         <li class="ev-item">
           <div class="ev-top">
-            <code class="mono">${esc(e.source_id)}</code>
-            <span class="chip">${esc(e.evidence_level)}</span>
+            <code class="mono">${esc(cite)}</code>
+            <span class="chip">${esc(layer)}</span>
             ${Number.isFinite(Number(e.score)) ? `<span class="chip ghost num">score ${esc(fmt(e.score))}</span>` : ""}
           </div>
           <div class="ev-title">${esc(e.title)}</div>
-        </li>`).join("")}</ul>`;
+          ${links ? `<div class="ev-links">${links}</div>` : ""}
+        </li>`;
+      }).join("")}</ul>`;
     }
 
     function section(title, bodyHtml, count, subtitle) {

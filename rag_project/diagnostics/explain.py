@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 from rag_project.diagnostics.schemas import DiagnosisReport
-from rag_project.knowledge.concept_kb import evidence_layer_label, load_crosswalk
+from rag_project.diagnostics.zh_labels import (
+    zh_direction,
+    zh_feature,
+    zh_group,
+    zh_outcome,
+    zh_phase,
+    zh_severity,
+    zh_signal,
+    zh_unit,
+)
+from rag_project.knowledge.concept_kb import evidence_layer_label, load_crosswalk, resolve_source_url
 from rag_project.knowledge.evidence_index import EvidenceChunk
 
 
@@ -28,16 +38,17 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
 
     if report.key_deviations:
         for deviation in report.key_deviations:
+            unit_zh = zh_unit(deviation.unit)
             lines.append(
                 "- "
-                f"`{deviation.feature}`（{deviation.phase}）："
-                f"{deviation.feature_group}/{deviation.signal_name}，"
-                f"{deviation.direction} / {deviation.severity}，"
-                f"观测值 {deviation.observed_value:.4g} {deviation.unit}，"
-                f"模板均值 {deviation.template_value:.4g} {deviation.unit}，"
+                f"「{zh_feature(deviation.feature)}」（{zh_phase(deviation.phase)}阶段）："
+                f"{zh_group(deviation.feature_group)}·{zh_signal(deviation.signal_name)}，"
+                f"{zh_direction(deviation.direction)} / 严重度{zh_severity(deviation.severity)}，"
+                f"观测值 {deviation.observed_value:.4g} {unit_zh}，"
+                f"模板均值 {deviation.template_value:.4g} {unit_zh}，"
                 f"正确模板范围 {deviation.template_lower_bound:.4g}-"
-                f"{deviation.template_upper_bound:.4g} {deviation.unit}，"
-                f"std={deviation.template_std:.4g}，threshold={deviation.threshold_source}。"
+                f"{deviation.template_upper_bound:.4g} {unit_zh}，"
+                f"标准差 {deviation.template_std:.4g}。"
                 f"{deviation.interpretation}"
             )
     else:
@@ -56,27 +67,27 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
         for action in report.correction_plan:
             lines.append(
                 "- "
-                f"`{action.target_feature}`：{action.feature_group}/{action.target_signal}，"
-                f"phase={action.phase}，severity={action.severity}，"
-                f"goal={action.goal}，drill={action.drill}，"
-                f"validation={action.validation_metric}"
+                f"「{zh_feature(action.target_feature)}」"
+                f"（{zh_group(action.feature_group)}·{zh_signal(action.target_signal)}）："
+                f"阶段 {zh_phase(action.phase)}，严重度 {zh_severity(action.severity)}。"
+                f"目标：{action.goal} 训练：{action.drill} 验证：使观测值回到正确模板范围。"
             )
     else:
         lines.append("- 当前诊断没有生成结构化改进动作。")
 
-    lines.extend(["", "## Outcome-Deviation Explanation Links", ""])
+    lines.extend(["", "## 结果-偏差解释链", ""])
     if report.explanation_links:
         for link in report.explanation_links:
             lines.append(
                 "- "
-                f"`{link.feature} -> {link.outcome_label}`: "
-                f"{link.feature_group}/{link.signal_name}, phase={link.phase}, "
-                f"severity={link.severity}, direction={link.deviation_direction}; "
-                f"mechanism={link.mechanism}; rationale={link.rationale}; "
-                f"correction_focus={link.correction_focus}; evidence_query={link.evidence_query}"
+                f"「{zh_feature(link.feature)}」→ 后果「{zh_outcome(link.outcome_label)}」："
+                f"{zh_group(link.feature_group)}·{zh_signal(link.signal_name)}，"
+                f"{zh_phase(link.phase)}阶段，严重度{zh_severity(link.severity)}，"
+                f"{zh_direction(link.deviation_direction)}；"
+                f"机制：{link.mechanism}；说明：{link.rationale}；纠正：{link.correction_focus}"
             )
     else:
-        lines.append("- No structured explanation links were generated.")
+        lines.append("- 当前诊断没有生成结果-偏差解释链。")
 
     lines.extend(["", "## 文献证据", ""])
     if evidence:
@@ -90,7 +101,11 @@ def render_diagnosis_markdown(report: DiagnosisReport, evidence: list[EvidenceCh
                 f"- {cite} | {evidence_layer_label(chunk.evidence_level)} | score={chunk.score:.2f}"
             )
             lines.append(f"  - 标题：{chunk.title}")
-            lines.append(f"  - 文件：`{chunk.artifact_path}`")
+            # Original-source URL(s) so the reader can open the literature itself.
+            for sid in sids:
+                url = resolve_source_url(sid) or resolve_source_url(chunk.source_id)
+                if url:
+                    lines.append(f"  - 原文 {sid}：{url}")
             lines.append(f"  - 摘要片段：{_clip(chunk.text)}")
     else:
         lines.append("- 当前 evidence index 没有检索到可用证据；请扩展文献正文抽取或调整查询词。")
